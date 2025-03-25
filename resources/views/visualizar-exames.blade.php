@@ -38,7 +38,7 @@ if(count($exames) > 1){
 <body class="bg-light">
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="/">
                 <i class="fas fa-stethoscope me-2"></i>Sistema de Indicadores - Exames
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -47,7 +47,7 @@ if(count($exames) > 1){
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="cadastro-exames.html">
+                        <a class="nav-link" href="/exames">
                             <i class="fas fa-plus-circle me-1"></i>Cadastrar Indicadores
                         </a>
                     </li>
@@ -100,7 +100,11 @@ if(count($exames) > 1){
                                 </button>
                             </div>
                         </form>
-
+<br>                    
+                        <?php if(count($exames) < 1){
+                                echo "<center><h4> Nenhum indicador cadastrado nessa competência </h4></center>";
+                            }
+                        ?>
                         <?php if(count($totalExames) > 0){?>
                         <div class="row g-4">
                             <!-- Card Exames Clínicos -->
@@ -211,7 +215,7 @@ if(count($exames) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-x-ray sector-icon"></i>
                                         <h6 class="card-title">Raio X</h6>
-                                        <h3 class="mb-0"><?php echo $e->raiox;?>0</h3>
+                                        <h3 class="mb-0"><?php echo $e->raiox;?></h3>
                                         <small class="text-muted">Total do Mês</small>
                                     </div>
                                 </div>

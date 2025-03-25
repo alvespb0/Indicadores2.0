@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -7,11 +8,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body class="bg-light">
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="/">
                 <i class="fas fa-chart-line me-2"></i>Sistema de Indicadores
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -41,7 +43,8 @@
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-body">
-                        <form id="comercialForm">
+                        <form id="comercialForm" action="{{ route('comercial.cadastrar') }}" method="POST">
+                        @csrf
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="propostasEnviadas" class="form-label">
@@ -120,7 +123,7 @@
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-save me-2"></i>Salvar Indicadores
                                 </button>
-                                <a href="visualizar-comercial.html" class="btn btn-secondary">
+                                <a href="/visualizar-comercial" class="btn btn-secondary">
                                     <i class="fas fa-chart-bar me-2"></i>Visualizar Indicadores
                                 </a>
                             </div>
@@ -133,11 +136,29 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.getElementById('comercialForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            // Aqui você implementará a lógica de salvamento
-            alert('Indicadores salvos com sucesso!');
-            window.location.href = 'visualizar-comercial.html';
+        document.getElementById('comercialForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Previne o envio padrão do formulário
+
+            const formData = new FormData(this); // Cria o FormData com os dados do formulário
+
+            fetch('{{ route('comercial.cadastrar') }}', { // Aponte para a rota de cadastro
+                method: 'POST',
+                body: formData, // Envia o FormData diretamente
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') // CSRF Token
+                }
+            })
+            .then(response => response.json()) // Espera pela resposta em JSON
+            .then(data => {
+                if (data.message) {
+                    alert(data.message); // Exibe mensagem de sucesso
+                } else if (data.error) {
+                    alert(data.error); // Exibe mensagem de erro
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao cadastrar exame:', error); // Loga qualquer erro
+            });
         });
     </script>
 </body>

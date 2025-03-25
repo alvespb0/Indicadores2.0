@@ -1,0 +1,65 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Carbon\Carbon;
+use App\Models\Comercial;
+
+class ControllerComercial extends Controller
+{
+    public function cadastrarIndicador(Request $request){
+        try {
+            $validatedData = $request->validate([
+                'propostasEnviadas' => 'required|numeric',
+                'propostasFechadas' => 'required|numeric',
+                'clientesNovos' => 'required|numeric',
+                'renovacoes' => 'required|numeric',
+                'valorTotal' => 'required|numeric',
+                'competencia' => 'required|date_format:Y-m', // Validando o formato da competência (YYYY-MM)
+            ]);
+
+            Carbon::setLocale('pt_BR');
+            $competenciaFormatted = Carbon::createFromFormat('Y-m', $request->competencia)
+            ->translatedFormat('F \\d\\e Y'); // Exemplo: "Janeiro de 2025"
+
+            // Criando o exame diretamente com os dados da requisição
+            $indicador = Comercial::create([
+                'propostasEnviadas' => $request->propostasEnviadas,
+                'propostasFechadas' => $request->propostasFechadas,
+                'clientesNovos' => $request->clientesNovos,
+                'renovacoes' => $request->renovacoes,
+                'valorTotal' => $request->valorTotal,
+                'competencia' => $competenciaFormatted,
+            ]);
+            return response()->json([
+                'message' => 'Indicador cadastrado com sucesso!',
+                'data' => $indicador
+            ], 201);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Erro ao cadastrar indicador.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Verifica se essa request existe, se essa request existe, o front está encaminhando um filtro de data 
+     * se não, retorna todos os exames
+     */
+    public function getComercial(Request $request){
+        $mes = $request->query('mes');
+        $ano = $request->query('ano');
+
+        if ($mes && $ano) {
+            $competencia = "$mes de $ano";
+            $indicadores = Comercial::where('competencia', $competencia)->get();
+        } else {
+            $indicadores = Comercial::all();
+        }
+        return view('visualizar-comercial', compact('indicadores'));
+    }
+}

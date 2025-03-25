@@ -1,3 +1,24 @@
+<?php
+
+$totalComercial = [];
+if(count($indicadores) > 1){
+    $totalComercial = [
+        'propostasEnviadas' => 0,
+        'propostasFechadas' => 0,
+        'clientesNovos' => 0,
+        'renovacoes' => 0,
+        'valorTotal' => 0
+    ];
+
+    foreach ($indicadores as $totalIndicadores) {
+        $totalComercial['propostasEnviadas'] += (int) $totalIndicadores['propostasEnviadas'];
+        $totalComercial['propostasFechadas'] += (int) $totalIndicadores['propostasFechadas'];
+        $totalComercial['clientesNovos'] += (int) $totalIndicadores['clientesNovos'];
+        $totalComercial['renovacoes'] += (int) $totalIndicadores['renovacoes'];
+        $totalComercial['valorTotal'] += (float) $totalIndicadores['valorTotal'];
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -11,7 +32,7 @@
 <body class="bg-light">
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="/">
                 <i class="fas fa-chart-line me-2"></i>Sistema de Indicadores - Comercial
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -20,7 +41,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="cadastro-comercial.html">
+                        <a class="nav-link" href="/comercial">
                             <i class="fas fa-plus-circle me-1"></i>Cadastrar Indicadores
                         </a>
                     </li>
@@ -40,7 +61,45 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title mb-4">Indicadores do Setor Comercial</h5>
-                        
+                        <form name = "filterForm" id="filterForm" action="/visualizar-comercial" method="GET" class="d-flex justify-content">
+                            <div class="input-group" style="width: 420px;">
+                                <select class="form-select" name="mes" id="mes">
+                                    <option value="">Selecione o Mês</option>
+                                    <option value="Janeiro">Janeiro</option>
+                                    <option value="Fevereiro">Fevereiro</option>
+                                    <option value="Março">Março</option>
+                                    <option value="Abril">Abril</option>
+                                    <option value="Maio">Maio</option>
+                                    <option value="Junho">Junho</option>
+                                    <option value="Julho">Julho</option>
+                                    <option value="Agosto">Agosto</option>
+                                    <option value="Setembro">Setembro</option>
+                                    <option value="Outubro">Outubro</option>
+                                    <option value="Novembro">Novembro</option>
+                                    <option value="Dezembro">Dezembro</option>
+                                </select>
+
+                                <select class="form-select" name="ano" id="ano">
+                                    <option value="">Selecione o Ano</option>
+                                    <?php 
+                                        $anoAtual = date('Y'); 
+                                        for ($i = $anoAtual; $i >= $anoAtual - 10; $i--) { 
+                                            echo "<option value='$i'>$i</option>"; 
+                                        }
+                                    ?>
+                                </select>
+
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-calendar-alt"></i> Filtrar
+                                </button>
+                            </div>
+                        </form>
+                        <br>
+                        <?php if(count($indicadores) < 1){
+                                echo "<center><h4> Nenhum indicador cadastrado nessa competência </h4></center>";
+                            }
+                        ?>
+                        <?php if(count($totalComercial) > 1){?>
                         <div class="row g-4">
                             <!-- Card Propostas Enviadas -->
                             <div class="col-md-4">
@@ -48,7 +107,7 @@
                                     <div class="card-body text-center">
                                         <i class="fas fa-paper-plane sector-icon"></i>
                                         <h6 class="card-title">Propostas Enviadas</h6>
-                                        <h3 class="mb-0">25</h3>
+                                        <h3 class="mb-0"><?php echo $totalComercial['propostasEnviadas']; ?></h3>
                                         <small class="text-muted">Total do Mês</small>
                                     </div>
                                 </div>
@@ -60,7 +119,7 @@
                                     <div class="card-body text-center">
                                         <i class="fas fa-check-circle sector-icon"></i>
                                         <h6 class="card-title">Propostas Fechadas</h6>
-                                        <h3 class="mb-0">18</h3>
+                                        <h3 class="mb-0"><?php echo $totalComercial['propostasFechadas']; ?></h3>
                                         <small class="text-muted">Total do Mês</small>
                                     </div>
                                 </div>
@@ -72,7 +131,7 @@
                                     <div class="card-body text-center">
                                         <i class="fas fa-user-plus sector-icon"></i>
                                         <h6 class="card-title">Clientes Novos</h6>
-                                        <h3 class="mb-0">12</h3>
+                                        <h3 class="mb-0"> <?php echo $totalComercial['clientesNovos']; ?> </h3>
                                         <small class="text-muted">Total do Mês</small>
                                     </div>
                                 </div>
@@ -84,7 +143,7 @@
                                     <div class="card-body text-center">
                                         <i class="fas fa-sync sector-icon"></i>
                                         <h6 class="card-title">Renovações</h6>
-                                        <h3 class="mb-0">15</h3>
+                                        <h3 class="mb-0"><?php echo $totalComercial['renovacoes']; ?></h3>
                                         <small class="text-muted">Total do Mês</small>
                                     </div>
                                 </div>
@@ -96,13 +155,77 @@
                                     <div class="card-body text-center">
                                         <i class="fas fa-dollar-sign sector-icon"></i>
                                         <h6 class="card-title">Valor Total</h6>
-                                        <h3 class="mb-0">R$ 45.000</h3>
+                                        <h3 class="mb-0"><?php echo $totalComercial['valorTotal']; ?></h3>
                                         <small class="text-muted">Total do Mês</small>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <?php }else{
+                            foreach($indicadores as $i):
+                        ?>
+                                                <div class="row g-4">
+                            <!-- Card Propostas Enviadas -->
+                            <div class="col-md-4">
+                                <div class="card h-100">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-paper-plane sector-icon"></i>
+                                        <h6 class="card-title">Propostas Enviadas</h6>
+                                        <h3 class="mb-0"><?php echo $i->propostasEnviadas; ?></h3>
+                                        <small class="text-muted">Total do Mês</small>
+                                    </div>
+                                </div>
+                            </div>
 
+                            <!-- Card Propostas Fechadas -->
+                            <div class="col-md-4">
+                                <div class="card h-100">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-check-circle sector-icon"></i>
+                                        <h6 class="card-title">Propostas Fechadas</h6>
+                                        <h3 class="mb-0"><?php echo $i->propostasFechadas; ?></h3>
+                                        <small class="text-muted">Total do Mês</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card Clientes Novos -->
+                            <div class="col-md-4">
+                                <div class="card h-100">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-user-plus sector-icon"></i>
+                                        <h6 class="card-title">Clientes Novos</h6>
+                                        <h3 class="mb-0"> <?php echo $i->clientesNovos; ?> </h3>
+                                        <small class="text-muted">Total do Mês</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card Renovações -->
+                            <div class="col-md-4">
+                                <div class="card h-100">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-sync sector-icon"></i>
+                                        <h6 class="card-title">Renovações</h6>
+                                        <h3 class="mb-0"><?php echo $i->renovacoes; ?></h3>
+                                        <small class="text-muted">Total do Mês</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card Valor Total -->
+                            <div class="col-md-4">
+                                <div class="card h-100">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-dollar-sign sector-icon"></i>
+                                        <h6 class="card-title">Valor Total</h6>
+                                        <h3 class="mb-0"><?php echo $i->valorTotal; ?></h3>
+                                        <small class="text-muted">Total do Mês</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <?php  endforeach;}  ?>
                         <!-- Tabela de Histórico -->
                         <div class="table-responsive mt-4">
                             <table class="table">
@@ -117,22 +240,16 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <?php foreach($indicadores as $i):?>
                                     <tr>
-                                        <td>01/2024</td>
-                                        <td>25</td>
-                                        <td>18</td>
-                                        <td>12</td>
-                                        <td>15</td>
-                                        <td>R$ 45.000</td>
+                                    <td><?php echo $i->competencia; ?></td>
+                                    <td><?php echo $i->propostasEnviadas; ?></td>
+                                    <td><?php echo $i->propostasFechadas; ?></td>
+                                    <td><?php echo $i->clientesNovos; ?></td>
+                                    <td><?php echo $i->renovacoes; ?></td>
+                                    <td><?php echo $i->valorTotal; ?></td>
                                     </tr>
-                                    <tr>
-                                        <td>12/2023</td>
-                                        <td>22</td>
-                                        <td>15</td>
-                                        <td>10</td>
-                                        <td>12</td>
-                                        <td>R$ 38.000</td>
-                                    </tr>
+                                    <?php endforeach;?>
                                 </tbody>
                             </table>
                         </div>

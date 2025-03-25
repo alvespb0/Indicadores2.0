@@ -54,10 +54,10 @@
                             <h5 class="card-title">Comercial</h5>
                             <p class="card-text">Gestão de indicadores comerciais e financeiros</p>
                             <div class="d-grid gap-2">
-                                <a href="login.html?setor=comercial" class="btn btn-primary">
+                                <a href="/comercial" class="btn btn-primary">
                                     <i class="fas fa-sign-in-alt me-2"></i>Acessar
                                 </a>
-                                <a href="visualizar-comercial.html" class="btn btn-secondary">
+                                <a href="/visualizar-comercial" class="btn btn-secondary">
                                     <i class="fas fa-chart-bar me-2"></i>Visualizar Indicadores
                                 </a>
                             </div>

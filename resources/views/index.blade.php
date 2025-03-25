@@ -3,7 +3,8 @@ $usuario = Session::get('usuario');
 $setor = Session::get('setor');
 echo $setor;
 if(empty($usuario) || empty($setor)){
-    return redirect('/login');
+    header("Location: http://{$_SERVER['HTTP_HOST']}/login");
+    exit;
 }
 ?>
 <!DOCTYPE html>
@@ -57,6 +58,7 @@ if(empty($usuario) || empty($setor)){
 
             <div class="row g-4 justify-content-center">
                 <!-- Card Exames -->
+                <?php if($setor == 'admin' || $setor == 'exames'):?> 
                 <div class="col-md-6 col-lg-3">
                     <div class="card h-100">
                         <div class="card-body text-center">
@@ -74,8 +76,10 @@ if(empty($usuario) || empty($setor)){
                         </div>
                     </div>
                 </div>
+                <?php endif;?>
 
                 <!-- Card Comercial -->
+                <?php if($setor == 'admin' || $setor == 'comercial'):?> 
                 <div class="col-md-6 col-lg-3">
                     <div class="card h-100">
                         <div class="card-body text-center">
@@ -93,8 +97,10 @@ if(empty($usuario) || empty($setor)){
                         </div>
                     </div>
                 </div>
+                <?php endif; ?>
 
                 <!-- Card Segurança do Trabalho -->
+                <?php if($setor == 'admin' || $setor == 'seguranca'):?> 
                 <div class="col-md-6 col-lg-3">
                     <div class="card h-100">
                         <div class="card-body text-center">
@@ -112,8 +118,10 @@ if(empty($usuario) || empty($setor)){
                         </div>
                     </div>
                 </div>
+                <?php endif; ?>
 
                 <!-- Card Ambiental -->
+                <?php if($setor == 'admin' || $setor == 'ambiental'):?> 
                 <div class="col-md-6 col-lg-3">
                     <div class="card h-100">
                         <div class="card-body text-center">
@@ -131,6 +139,7 @@ if(empty($usuario) || empty($setor)){
                         </div>
                     </div>
                 </div>
+                <?php endif; ?> 
             </div>
         </div>
     </main>

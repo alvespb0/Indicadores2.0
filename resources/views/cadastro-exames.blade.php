@@ -1,3 +1,12 @@
+<?php
+$setor = Session::get('setor');
+$usuario = Session::get('usuario');
+if($setor !== 'exames' && $setor !== 'admin'){
+    header("Location: http://{$_SERVER['HTTP_HOST']}/login");
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -26,7 +35,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="/logout">
                             <i class="fas fa-sign-out-alt me-1"></i>Sair
                         </a>
                     </li>

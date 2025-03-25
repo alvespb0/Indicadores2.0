@@ -1,3 +1,11 @@
+<?php
+$usuario = Session::get('usuario');
+$setor = Session::get('setor');
+echo $setor;
+if(empty($usuario) || empty($setor)){
+    return redirect('/login');
+}
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -20,13 +28,15 @@
                 <i class="fas fa-chart-line me-2"></i>Sistema de Indicadores
             </a>
             <ul class="navbar-nav ms-auto">
+                <?php if($setor == 'admin'){?>
                     <li class="nav-item">
                         <a class="nav-link" href="/usuario">
                             <i class="fa-solid fa-circle-user"></i> &nbsp Cadastrar Usuarios
                         </a>
                     </li>
+                <?php } ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="login.html">
+                        <a class="nav-link" href="/logout">
                             <i class="fas fa-sign-out-alt me-1"></i> &nbsp Sair
                         </a>
                     </li>

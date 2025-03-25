@@ -55,9 +55,10 @@
                         <label for="sector" class="form-label">Setor</label>
                         <select class="form-select" id="setor" name="setor" required>
                             <option value="" disabled selected>Selecione um setor</option>
+                            <option value="admin">admin</option>
                             <option value="comercial">Comercial</option>
                             <option value="seguranca">Segurança</option>
-                            <option value="recepcao">Recepção</option>
+                            <option value="exames">Recepção</option>
                             <option value="ambiental">Ambiental</option>
                             <option value="gerencia">Gerência</option>
                         </select>

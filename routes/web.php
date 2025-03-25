@@ -16,7 +16,12 @@ Route::get('/usuario', function(){return view('cadastro-usuario'); });
 
 Route::post('/usuario/cadastrar', [ControllerUsuario::class, 'cadastrarUsuario'])->name('user.cadastrar');
 
+Route::post('/login', [ControllerUsuario::class, 'logarUsuario'])->name('user.login');
+
 Route::get('/login', function(){return view('login');});
+
+Route::get('/logout', function(){ Session::flush(); return redirect('/login');});
+
 /* ***************************************************************************************************** */
 
 /* ROUTE PARA AS TELAS DE INDICADORES DE EXAMES */

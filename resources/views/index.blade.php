@@ -7,22 +7,41 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .body{
+            overflow: hidden;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="/">
                 <i class="fas fa-chart-line me-2"></i>Sistema de Indicadores
             </a>
+            <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/usuario">
+                            <i class="fa-solid fa-circle-user"></i> &nbsp Cadastrar Usuarios
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="login.html">
+                            <i class="fas fa-sign-out-alt me-1"></i> &nbsp Sair
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 
     <main class="main-content">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-md-8 text-center mb-5">
-                    <h1 class="display-4 mb-3">Bem-vindo ao Sistema de Indicadores</h1>
+                <div class="col-md-8 text-center">
+                    <h1 class="display-4 mb-1">Bem-vindo ao Sistema de Indicadores</h1>
                     <p class="lead">Selecione o setor para acessar ou visualizar os indicadores</p>
+                    <div class="collapse navbar-collapse" id="navbarNav">
                 </div>
             </div>
 
@@ -33,7 +52,7 @@
                         <div class="card-body text-center">
                             <i class="fas fa-stethoscope sector-icon"></i>
                             <h5 class="card-title">Exames</h5>
-                            <p class="card-text">Gestão de indicadores relacionados a exames ocupacionais</p>
+                            <p class="card-text">Gestão de indicadores relacionados a exames</p>
                             <div class="d-grid gap-2">
                                 <a href="exames" class="btn btn-primary">
                                     <i class="fas fa-sign-in-alt me-2"></i>Acessar
@@ -52,7 +71,7 @@
                         <div class="card-body text-center">
                             <i class="fas fa-chart-line sector-icon"></i>
                             <h5 class="card-title">Comercial</h5>
-                            <p class="card-text">Gestão de indicadores comerciais e financeiros</p>
+                            <p class="card-text">Gestão de indicadores do setor comercial</p>
                             <div class="d-grid gap-2">
                                 <a href="/comercial" class="btn btn-primary">
                                     <i class="fas fa-sign-in-alt me-2"></i>Acessar
@@ -90,7 +109,7 @@
                         <div class="card-body text-center">
                             <i class="fas fa-leaf sector-icon"></i>
                             <h5 class="card-title">Ambiental</h5>
-                            <p class="card-text">Gestão de indicadores ambientais</p>
+                            <p class="card-text">Gestão de indicadores do setor ambiental</p>
                             <div class="d-grid gap-2">
                                 <a href="login.html?setor=ambiental" class="btn btn-primary">
                                     <i class="fas fa-sign-in-alt me-2"></i>Acessar

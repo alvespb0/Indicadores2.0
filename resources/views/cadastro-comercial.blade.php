@@ -7,7 +7,7 @@
     <title>Cadastro de Indicadores - Comercial</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="{{ asset('styles.css') }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body class="bg-light">
@@ -22,7 +22,12 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="login.html">
+                        <a class="nav-link" href="/visualizar-comercial">
+                            <i class="fas fa-chart-bar me-1"></i>Visualizar Indicadores
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
                             <i class="fas fa-sign-out-alt me-1"></i>Sair
                         </a>
                     </li>
@@ -133,7 +138,18 @@
             </div>
         </div>
     </div>
-
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p class="footer-text">© 2024 Sistema de Indicadores - Saúde Ocupacional</p>
+                <div class="footer-links">
+                    <a href="#"><i class="fas fa-info-circle me-1"></i>Sobre</a>
+                    <a href="#"><i class="fas fa-envelope me-1"></i>Contato</a>
+                    <a href="#"><i class="fas fa-shield-alt me-1"></i>Política de Privacidade</a>
+                </div>
+            </div>
+        </div>
+    </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.getElementById('comercialForm').addEventListener('submit', function(event) {

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ControllerExame;
 use App\Http\Controllers\ControllerComercial;
 use App\Http\Controllers\ControllerUsuario;
+use App\Http\Controllers\ControllerSeguranca;
 
 /* ROUTE PARA A INDEX */
 Route::get('/', function (){return view('index');}); 
@@ -44,4 +45,11 @@ Route::post('/comercial/cadastrar', [ControllerComercial::class, 'cadastrarIndic
 
 /* ***************************************************************************************************** */
 
+/* ROUTE PARA AS TELAS DE INDICADORES DA SEGURANÇA */
+
+Route::get('/seguranca', function(){ return view('cadastro-seguranca');});
+
+Route::get('/visualizar-seguranca', [ControllerSeguranca::class, 'getSeguranca']);
+
+Route::post('/seguranca/cadastrar', [ControllerSeguranca::class, 'cadastrarIndicador'])->name('seguranca.cadastrar');
 ?>

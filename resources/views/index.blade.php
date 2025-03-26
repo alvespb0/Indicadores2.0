@@ -108,10 +108,10 @@ if(empty($usuario) || empty($setor)){
                             <h5 class="card-title">Segurança do Trabalho</h5>
                             <p class="card-text">Gestão de indicadores de segurança ocupacional</p>
                             <div class="d-grid gap-2">
-                                <a href="login.html?setor=seguranca" class="btn btn-primary">
+                                <a href="/seguranca" class="btn btn-primary">
                                     <i class="fas fa-sign-in-alt me-2"></i>Acessar
                                 </a>
-                                <a href="visualizar-seguranca.html" class="btn btn-secondary">
+                                <a href="/visualizar-seguranca" class="btn btn-secondary">
                                     <i class="fas fa-chart-bar me-2"></i>Visualizar Indicadores
                                 </a>
                             </div>

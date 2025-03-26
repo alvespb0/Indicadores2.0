@@ -34,7 +34,7 @@
                                         <option value="comercial">Comercial</option>
                                         <option value="seguranca">Segurança do Trabalho</option>
                                         <option value="ambiental">Ambiental</option>
-                                        <option value="gerencia">Gerencia</option>
+                                        <option value="admin">Gerencia</option>
                                     </select>
                                 </div>
                             </div>

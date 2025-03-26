@@ -18,7 +18,7 @@
             </a>
             <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="login.html">
+                        <a class="nav-link" href="/logout">
                             <i class="fas fa-sign-out-alt me-1"></i>Sair
                         </a>
                     </li>

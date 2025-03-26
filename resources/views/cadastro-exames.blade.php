@@ -136,7 +136,7 @@ if($setor !== 'exames' && $setor !== 'admin'){
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-save me-2"></i>Salvar Indicadores
                                 </button>
-                                <a href="visualizar-exames.html" class="btn btn-secondary">
+                                <a href="/visualizar-exames" class="btn btn-secondary">
                                     <i class="fas fa-chart-bar me-2"></i>Visualizar Indicadores
                                 </a>
                             </div>

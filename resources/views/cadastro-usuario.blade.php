@@ -60,7 +60,7 @@
                             <option value="seguranca">Segurança</option>
                             <option value="exames">Recepção</option>
                             <option value="ambiental">Ambiental</option>
-                            <option value="gerencia">Gerência</option>
+                            <option value="admin">Gerência</option>
                         </select>
                     </div>
                     

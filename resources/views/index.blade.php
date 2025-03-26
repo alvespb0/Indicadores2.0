@@ -129,10 +129,10 @@ if(empty($usuario) || empty($setor)){
                             <h5 class="card-title">Ambiental</h5>
                             <p class="card-text">Gestão de indicadores do setor ambiental</p>
                             <div class="d-grid gap-2">
-                                <a href="login.html?setor=ambiental" class="btn btn-primary">
+                                <a href="/ambiental" class="btn btn-primary">
                                     <i class="fas fa-sign-in-alt me-2"></i>Acessar
                                 </a>
-                                <a href="visualizar-ambiental.html" class="btn btn-secondary">
+                                <a href="/visualizar-ambiental" class="btn btn-secondary">
                                     <i class="fas fa-chart-bar me-2"></i>Visualizar Indicadores
                                 </a>
                             </div>

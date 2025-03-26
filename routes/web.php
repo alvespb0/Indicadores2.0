@@ -5,6 +5,7 @@ use App\Http\Controllers\ControllerExame;
 use App\Http\Controllers\ControllerComercial;
 use App\Http\Controllers\ControllerUsuario;
 use App\Http\Controllers\ControllerSeguranca;
+use App\Http\Controllers\ControllerAmbiental;
 
 /* ROUTE PARA A INDEX */
 Route::get('/', function (){return view('index');}); 
@@ -52,4 +53,14 @@ Route::get('/seguranca', function(){ return view('cadastro-seguranca');});
 Route::get('/visualizar-seguranca', [ControllerSeguranca::class, 'getSeguranca']);
 
 Route::post('/seguranca/cadastrar', [ControllerSeguranca::class, 'cadastrarIndicador'])->name('seguranca.cadastrar');
+
+/* ***************************************************************************************************** */
+
+/* ROUTE PARA AS TELAS DE INDICADORES DO AMBIENTAL */
+
+Route::get('/ambiental', function(){ return view('cadastro-ambiental');});
+
+Route::get('/visualizar-ambiental', [ControllerAmbiental::class, 'getAmbiental']);
+
+Route::post('/ambiental/cadastrar', [ControllerAmbiental::class, 'cadastrarIndicador'])->name('ambiental.cadastrar');
 ?>

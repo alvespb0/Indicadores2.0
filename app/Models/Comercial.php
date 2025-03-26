@@ -13,4 +13,5 @@ class Comercial extends Model
         'renovacoes',
         'valorTotal',
         'competencia',
-    ];}
+    ];
+}

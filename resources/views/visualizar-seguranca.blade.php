@@ -33,7 +33,7 @@ if(count($indicadores) > 1){
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
-<body class="bg-light">
+<body>
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="/">
@@ -211,21 +211,27 @@ if(count($indicadores) > 1){
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>Competência</th>
-                                        <th>Levantamentos Realizados</th>
-                                        <th>Treinamentos Realizados</th>
-                                        <th>Laudos Vendidos</th>
-                                        <th>Laudos Emitidos</th>
+                                        <th class="text-center">Competência</th>
+                                        <th class="text-center">Levantamentos Realizados</th>
+                                        <th class="text-center">Treinamentos Realizados</th>
+                                        <th class="text-center">Laudos Vendidos</th>
+                                        <th class="text-center">Laudos Emitidos</th>
+                                        @if($setor == 'admin')
+                                        <th class="text-center">Ação</th>
+                                        @endif
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php foreach($indicadores as $i):?>
                                     <tr>
-                                        <td><?php echo $i->competencia ?></td>
-                                        <td><?php echo $i->levantamentoRealizados ?></td>
-                                        <td><?php echo $i->treinamentosRealizados ?></td>
-                                        <td><?php echo $i->laudosVendidos ?></td>
-                                        <td><?php echo $i->laudosEmitidos ?></td>
+                                        <td class="text-center"><?php echo $i->competencia ?></td>
+                                        <td class="text-center"><?php echo $i->levantamentoRealizados ?></td>
+                                        <td class="text-center"><?php echo $i->treinamentosRealizados ?></td>
+                                        <td class="text-center"><?php echo $i->laudosVendidos ?></td>
+                                        <td class="text-center"><?php echo $i->laudosEmitidos ?></td>
+                                        @if($setor == 'admin')
+                                        <td class="text-center"><a href="{{ route('seguranca.deletar', ['id'=>$i->id]) }}" class = "btn btn-outline-danger" onclick="return confirm('Tem certeza que deseja excluir esse indicador?')">deletar</a></td>
+                                        @endif
                                     </tr>
                                     <?php endforeach; ?>
                                 </tbody>

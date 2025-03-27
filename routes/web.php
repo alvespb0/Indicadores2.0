@@ -34,6 +34,8 @@ Route::get('/visualizar-exames', [ControllerExame::class, 'getExames']); # para 
 
 Route::post('/exames/cadastrar', [ControllerExame::class, 'cadastrarExames'])->name('exames.cadastrar'); # post que faz o cadastro dos indicadores de exames no banco
 
+Route::get('/visualizar-exames/deletar/{id}', [ControllerExame::class, 'deletarIndicador'])->name('exame.deletar');
+
 /* ***************************************************************************************************** */
 
 /* ROUTE PARA AS TELAS DE INDICADORES DO COMERCIAL */
@@ -43,6 +45,8 @@ Route::get('/comercial', function(){ return view('cadastro-comercial'); });
 Route::get('/visualizar-comercial', [ControllerComercial::class, 'getComercial']);
 
 Route::post('/comercial/cadastrar', [ControllerComercial::class, 'cadastrarIndicador'])->name('comercial.cadastrar');
+
+Route::get('/visualizar-comercial/deletar/{id}', [ControllerComercial::class, 'deletarIndicador'])->name('comercial.deletar');
 
 /* ***************************************************************************************************** */
 
@@ -54,6 +58,8 @@ Route::get('/visualizar-seguranca', [ControllerSeguranca::class, 'getSeguranca']
 
 Route::post('/seguranca/cadastrar', [ControllerSeguranca::class, 'cadastrarIndicador'])->name('seguranca.cadastrar');
 
+Route::get('/visualizar-seguranca/deletar/{id}', [ControllerSeguranca::class, 'deletarIndicador'])->name('seguranca.deletar');
+
 /* ***************************************************************************************************** */
 
 /* ROUTE PARA AS TELAS DE INDICADORES DO AMBIENTAL */
@@ -63,4 +69,6 @@ Route::get('/ambiental', function(){ return view('cadastro-ambiental');});
 Route::get('/visualizar-ambiental', [ControllerAmbiental::class, 'getAmbiental']);
 
 Route::post('/ambiental/cadastrar', [ControllerAmbiental::class, 'cadastrarIndicador'])->name('ambiental.cadastrar');
+
+Route::get('/visualizar-ambiental/deletar/{id}', [ControllerAmbiental::class, 'deletarIndicador'])->name('ambiental.deletar');
 ?>

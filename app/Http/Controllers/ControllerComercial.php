@@ -26,11 +26,11 @@ class ControllerComercial extends Controller
 
             // Criando o exame diretamente com os dados da requisição
             $indicador = Comercial::create([
-                'propostasEnviadas' => $request->propostasEnviadas,
-                'propostasFechadas' => $request->propostasFechadas,
-                'clientesNovos' => $request->clientesNovos,
-                'renovacoes' => $request->renovacoes,
-                'valorTotal' => $request->valorTotal,
+                'propostasEnviadas' => $validatedData['propostasEnviadas'],
+                'propostasFechadas' => $validatedData['propostasFechadas'],
+                'clientesNovos' => $validatedData['clientesNovos'],
+                'renovacoes' => $validatedData['renovacoes'],
+                'valorTotal' => $validatedData['valorTotal'],
                 'competencia' => $competenciaFormatted,
             ]);
             return response()->json([
@@ -61,5 +61,15 @@ class ControllerComercial extends Controller
             $indicadores = Comercial::all();
         }
         return view('visualizar-comercial', compact('indicadores'));
+    }
+
+    /**
+     * recebe um id via método get e exclui o registro com esse id
+     * @param 
+     */
+    public function deletarIndicador($id){
+        $comercial = Comercial::find($id);
+        $comercial->delete();
+        return redirect('/visualizar-comercial');
     }
 }

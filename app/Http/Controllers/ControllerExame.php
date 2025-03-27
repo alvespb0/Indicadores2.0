@@ -27,16 +27,17 @@ class ControllerExame extends Controller
             $competenciaFormatted = Carbon::createFromFormat('Y-m', $request->competencia)
             ->translatedFormat('F \\d\\e Y'); // Exemplo: "Janeiro de 2025"
 
-            // Criando o exame diretamente com os dados da requisição
+                // Criando o exame diretamente com os dados da requisição
             $exame = Exame::create([
-                'clinicos' => $request->clinicos,
-                'audiometrias' => $request->audiometrias,
-                'laboratoriais' => $request->laboratoriais,
-                'raiox' => $request->raioX,
-                'complementares' => $request->complementares,
+                'clinicos' => $validatedData['clinicos'],
+                'audiometrias' => $validatedData['audiometrias'],
+                'laboratoriais' => $validatedData['laboratoriais'],
+                'raiox' => $validatedData['raioX'], // Certifique-se que o nome do campo no BD é 'raiox' e não 'raioX'
+                'complementares' => $validatedData['complementares'],
                 'competencia' => $competenciaFormatted
             ]);
-            return response()->json([
+
+	    return response()->json([
                 'message' => 'Indicador cadastrado com sucesso!',
                 'data' => $exame
             ], 201);
@@ -64,5 +65,15 @@ class ControllerExame extends Controller
             $exames = Exame::all();
         }
         return view('visualizar-exames', compact('exames'));
+    }
+
+    /**
+     * recebe um id via método get e exclui o registro com esse id
+     * @param 
+     */
+    public function deletarIndicador($id){
+        $exames = Exame::find($id);
+        $exames->delete();
+        return redirect('/visualizar-exames');
     }
 }

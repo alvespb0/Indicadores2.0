@@ -41,7 +41,7 @@ if(count($exames) > 1){
         }
     </style>
 </head>
-<body class="bg-light">
+<body>
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="/">
@@ -245,23 +245,29 @@ if(count($exames) > 1){
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>Competência</th>
-                                        <th>Exames Clínicos</th>
-                                        <th>Audiometrias</th>
-                                        <th>Exames Laboratoriais</th>
-                                        <th>Raio X</th>
-                                        <th>Exames Complementares</th>
+                                        <th class="text-center">Competência</th>
+                                        <th class="text-center">Exames Clínicos</th>
+                                        <th class="text-center">Audiometrias</th>
+                                        <th class="text-center">Exames Laboratoriais</th>
+                                        <th class="text-center">Raio X</th>
+                                        <th class="text-center">Exames Complementares</th>
+                                        @if($setor == 'admin')
+                                        <th class="text-center">Ação</th>
+                                        @endif
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php foreach ($exames as $exame): ?>
                                         <tr>
-                                        <td><?php echo $exame->competencia; ?></td>
-                                        <td><?php echo $exame->clinicos; ?></td>
-                                        <td><?php echo $exame->audiometrias; ?></td>
-                                        <td><?php echo $exame->laboratoriais; ?></td>
-                                        <td><?php echo $exame->raiox ; ?></td>
-                                        <td><?php echo $exame->complementares; ?></td>
+                                        <td class="text-center"><?php echo $exame->competencia; ?></td>
+                                        <td class="text-center"><?php echo $exame->clinicos; ?></td>
+                                        <td class="text-center"><?php echo $exame->audiometrias; ?></td>
+                                        <td class="text-center"><?php echo $exame->laboratoriais; ?></td>
+                                        <td class="text-center"><?php echo $exame->raiox ; ?></td>
+                                        <td class="text-center"><?php echo $exame->complementares; ?></td>
+                                        @if($setor == 'admin')
+                                        <td class="text-center"><a href="{{ route('exame.deletar', ['id'=>$exame->id]) }}" class = "btn btn-outline-danger" onclick="return confirm('Tem certeza que deseja excluir esse indicador?')">deletar</a></td>
+                                        @endif
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>

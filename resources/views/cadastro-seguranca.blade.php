@@ -18,7 +18,7 @@ if($setor !== 'seguranca' && $setor !== 'admin'){
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
 </head>
-<body class="bg-light">
+<body>
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="/">
@@ -134,7 +134,18 @@ if($setor !== 'seguranca' && $setor !== 'admin'){
             </div>
         </div>
     </div>
-
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p class="footer-text">© 2024 Sistema de Indicadores - Saúde Ocupacional</p>
+                <div class="footer-links">
+                    <a href="#"><i class="fas fa-info-circle me-1"></i>Sobre</a>
+                    <a href="#"><i class="fas fa-envelope me-1"></i>Contato</a>
+                    <a href="#"><i class="fas fa-shield-alt me-1"></i>Política de Privacidade</a>
+                </div>
+            </div>
+        </div>
+    </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.getElementById('segurancaForm').addEventListener('submit', function(event) {

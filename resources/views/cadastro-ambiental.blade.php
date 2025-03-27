@@ -18,7 +18,7 @@ if($setor !== 'ambiental' && $setor !== 'admin'){
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
 </head>
-<body class="bg-light">
+<body>
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="/">

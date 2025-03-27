@@ -29,9 +29,9 @@ class ControllerAmbiental extends Controller
 
             // Criando o exame diretamente com os dados da requisição
             $ambiental = Ambiental::create([
-                'orcamentosRealizados' => $request->orcamentosRealizados,
-                'orcamentosAprovados' => $request->orcamentosAprovados,
-                'clientesNovos' => $request->clientesNovos,
+                'orcamentosRealizados' => $validatedData['orcamentosRealizados'],
+                'orcamentosAprovados' => $validatedData['orcamentosAprovados'],
+                'clientesNovos' => $validatedData['clientesNovos'],
                 'competencia' => $competenciaFormatted
             ]);
             return response()->json([
@@ -64,5 +64,15 @@ class ControllerAmbiental extends Controller
             $indicadores = Ambiental::all();
         }
         return view('visualizar-ambiental', compact('indicadores'));
+    }
+
+    /**
+     * recebe um id via método get e exclui o registro com esse id
+     * @param 
+     */
+    public function deletarIndicador($id){
+        $ambiental = Ambiental::find($id);
+        $ambiental->delete();
+        return redirect('/visualizar-ambiental');
     }
 }

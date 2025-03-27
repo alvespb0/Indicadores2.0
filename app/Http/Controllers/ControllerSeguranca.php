@@ -17,12 +17,13 @@ class ControllerSeguranca extends Controller
     public function cadastrarIndicador(Request $request){
         try {
             $validatedData = $request->validate([
-                'levantamentosRealizados' => 'required|numeric',
-                'treinamentosRealizados' => 'required|numeric',
-                'laudosVendidos' => 'required|numeric',
-                'laudosEmitidos' => 'required|numeric',
+                'levantamentosRealizados' => 'required|numeric|min:1', // Mínimo 1
+                'treinamentosRealizados' => 'required|numeric|min:1',
+                'laudosVendidos' => 'required|numeric|min:1',
+                'laudosEmitidos' => 'required|numeric|min:1',
                 'competencia' => 'required|date_format:Y-m', // Validando o formato da competência (YYYY-MM)
             ]);
+            
         
             Carbon::setLocale('pt_BR');
             $competenciaFormatted = Carbon::createFromFormat('Y-m', $request->competencia)
@@ -30,13 +31,14 @@ class ControllerSeguranca extends Controller
 
             // Criando o exame diretamente com os dados da requisição
             $seguranca = Seguranca::create([
-                'levantamentoRealizados' => $request->levantamentosRealizados,
-                'treinamentosRealizados' => $request->treinamentosRealizados,
-                'laudosVendidos' => $request->laudosVendidos,
-                'laudosEmitidos' => $request->laudosEmitidos,
+                'levantamentoRealizados' => $validatedData['levantamentosRealizados'],
+                'treinamentosRealizados' => $validatedData['treinamentosRealizados'],
+                'laudosVendidos' => $validatedData['laudosVendidos'],
+                'laudosEmitidos' => $validatedData['laudosEmitidos'],
                 'competencia' => $competenciaFormatted
             ]);
-            return response()->json([
+
+	    return response()->json([
                 'message' => 'Indicador cadastrado com sucesso!',
                 'data' => $seguranca
             ], 201);
@@ -66,5 +68,15 @@ class ControllerSeguranca extends Controller
             $indicadores = Seguranca::all();
         }
         return view('visualizar-seguranca', compact('indicadores'));
+    }
+
+    /**
+     * recebe um id via método get e exclui o registro com esse id
+     * @param 
+     */
+    public function deletarIndicador($id){
+        $seguranca = Seguranca::find($id);
+        $seguranca->delete();
+        return redirect('/visualizar-seguranca');
     }
 }

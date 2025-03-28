@@ -7,16 +7,21 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('styles.css') }}">
-    <link rel="stylesheet" href="style.css"> <!-- Aqui você pode colocar o CSS que me passou -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="/">
-                <i class="fas fa-chart-line me-2"></i>Sistema de Indicadores
+                <i class="fa-solid fa-circle-user me-2"></i>Sistema de Indicadores
             </a>
             <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/visualizar-usuarios">
+                            <i class="fa-solid fa-circle-user"></i> &nbsp Visualizar Usuarios
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/logout">
                             <i class="fas fa-sign-out-alt me-1"></i>Sair

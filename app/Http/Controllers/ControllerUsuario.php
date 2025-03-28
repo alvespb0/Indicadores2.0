@@ -39,6 +39,11 @@ class ControllerUsuario extends Controller
         }
     }
 
+    /**
+     * Recebe uma request, valida os dados vindos do POST, valida a senha e o setor dado o usuario com esse email (que é UNI no bd) e retorna 
+     * @param Request
+     * @return json
+     */
     public function logarUsuario(Request $request){
         $validatedData = $request->validate([
             'sector' => 'required|string',
@@ -63,5 +68,25 @@ class ControllerUsuario extends Controller
             'usuario' => $user->usuario,
             'setor' => $user->setor
             ],200);
+    }
+
+    /**
+     * Apenas retorna todos os usuarios cadastrados
+     * @return Array;
+     */
+    public function getUsuarios(){
+        $usuarios = Usuario::all();
+        return view('visualizar-usuario', compact('usuarios'));
+    }
+
+    /**
+     * Recebe um id (pk) via get e excluir o usuario com esse usuario
+     * @param int
+     * @return json
+     */
+    public function deleteUsuario($id){
+        $usuario = Usuario::find($id);
+        $usuario->delete();
+        return redirect('visualizar-usuarios')->with('status', 'success');
     }
 }

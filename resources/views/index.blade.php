@@ -1,7 +1,6 @@
 <?php
 $usuario = Session::get('usuario');
 $setor = Session::get('setor');
-echo $setor;
 if(empty($usuario) || empty($setor)){
     header("Location: http://{$_SERVER['HTTP_HOST']}/login");
     exit;
@@ -30,6 +29,11 @@ if(empty($usuario) || empty($setor)){
             </a>
             <ul class="navbar-nav ms-auto">
                 <?php if($setor == 'admin'){?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/visualizar-usuarios">
+                            <i class="fa-solid fa-circle-user"></i> &nbsp Visualizar Usuarios
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/usuario">
                             <i class="fa-solid fa-circle-user"></i> &nbsp Cadastrar Usuarios

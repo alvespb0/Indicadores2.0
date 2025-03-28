@@ -8,7 +8,7 @@ use App\Http\Controllers\ControllerSeguranca;
 use App\Http\Controllers\ControllerAmbiental;
 
 /* ROUTE PARA A INDEX */
-Route::get('/', function (){return view('index');}); 
+Route::get('/', function (){return view('index');});
 
 /* ***************************************************************************************************** */
 
@@ -24,6 +24,9 @@ Route::get('/login', function(){return view('login');});
 
 Route::get('/logout', function(){ Session::flush(); return redirect('/login');});
 
+Route::get('/visualizar-usuarios', [ControllerUsuario::class, 'getUsuarios']);
+
+Route::get('/visualizar-usuarios/deletar', [ControllerUsuario::class, 'deleteUsuario'])->name('usuario.excluir');
 /* ***************************************************************************************************** */
 
 /* ROUTE PARA AS TELAS DE INDICADORES DE EXAMES */

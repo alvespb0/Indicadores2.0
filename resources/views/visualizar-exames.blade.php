@@ -120,7 +120,7 @@ if(count($exames) > 1){
                                         <i class="fas fa-user-md sector-icon"></i>
                                         <h6 class="card-title">Exames Clínicos</h6>
                                         <h3 class="mb-0"><?php echo $totalExames['clinicos'];?></h3>
-                                        <small class="text-muted">Total do Mês</small>
+                                        <small class="text-muted">Total do Período</small>
                                     </div>
                                 </div>
                             </div>
@@ -132,7 +132,7 @@ if(count($exames) > 1){
                                     <i class="fas fa-deaf sector-icon"></i>
                                     <h6 class="card-title">Audiometrias</h6>
                                         <h3 class="mb-0"><?php echo $totalExames['audiometrias'];?></h3>
-                                        <small class="text-muted">Total do Mês</small>
+                                        <small class="text-muted">Total do Período</small>
                                     </div>
                                 </div>
                             </div>
@@ -144,7 +144,7 @@ if(count($exames) > 1){
                                         <i class="fas fa-flask sector-icon"></i>
                                         <h6 class="card-title">Exames Laboratoriais</h6>
                                         <h3 class="mb-0"><?php echo $totalExames['laboratoriais'];?></h3>
-                                        <small class="text-muted">Total do Mês</small>
+                                        <small class="text-muted">Total do Período</small>
                                     </div>
                                 </div>
                             </div>
@@ -155,7 +155,7 @@ if(count($exames) > 1){
                                         <i class="fas fa-x-ray sector-icon"></i>
                                         <h6 class="card-title">Raio X</h6>
                                         <h3 class="mb-0"><?php echo $totalExames['raiox'];?></h3>
-                                        <small class="text-muted">Total do Mês</small>
+                                        <small class="text-muted">Total do Período</small>
                                     </div>
                                 </div>
                             </div>
@@ -167,7 +167,7 @@ if(count($exames) > 1){
                                         <i class="fas fa-plus-circle sector-icon"></i>
                                         <h6 class="card-title">Complementares</h6>
                                         <h3 class="mb-0"><?php echo $totalExames['complementares']; ?></h3>
-                                        <small class="text-muted">Total do Mês</small>
+                                        <small class="text-muted">Total do Período</small>
                                     </div>
                                 </div>
                             </div>

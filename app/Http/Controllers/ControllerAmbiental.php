@@ -24,9 +24,9 @@ class ControllerAmbiental extends Controller
             ]);
         
             Carbon::setLocale('pt_BR');
-            $competenciaFormatted = Carbon::createFromFormat('Y-m', $request->competencia)
-            ->translatedFormat('F \\d\\e Y'); // Exemplo: "Janeiro de 2025"
-
+            $competenciaFormatted = Carbon::parse($validatedData['competencia'] . '-01')  
+            ->translatedFormat('F \\d\\e Y'); #formata como 'fevereiro de 2025'      
+            
             // Criando o exame diretamente com os dados da requisição
             $ambiental = Ambiental::create([
                 'orcamentosRealizados' => $validatedData['orcamentosRealizados'],

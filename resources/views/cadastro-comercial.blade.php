@@ -22,7 +22,7 @@ if($setor !== 'comercial' && $setor !== 'admin'){
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="/">
-                <i class="fas fa-chart-line me-2"></i>Sistema de Indicadores
+                <i class="fas fa-chart-line me-2"></i>Sistema de Indicadores - Comercial
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>

@@ -24,15 +24,14 @@ class ControllerExame extends Controller
             ]);
         
             Carbon::setLocale('pt_BR');
-            $competenciaFormatted = Carbon::createFromFormat('Y-m', $request->competencia)
-            ->translatedFormat('F \\d\\e Y'); // Exemplo: "Janeiro de 2025"
-
-                // Criando o exame diretamente com os dados da requisição
+            $competenciaFormatted = Carbon::parse($validatedData['competencia'] . '-01') 
+            ->translatedFormat('F \\d\\e Y'); #formata como 'fevereiro de 2025'      
+        
             $exame = Exame::create([
                 'clinicos' => $validatedData['clinicos'],
                 'audiometrias' => $validatedData['audiometrias'],
                 'laboratoriais' => $validatedData['laboratoriais'],
-                'raiox' => $validatedData['raioX'], // Certifique-se que o nome do campo no BD é 'raiox' e não 'raioX'
+                'raiox' => $validatedData['raioX'],
                 'complementares' => $validatedData['complementares'],
                 'competencia' => $competenciaFormatted
             ]);
@@ -69,7 +68,8 @@ class ControllerExame extends Controller
 
     /**
      * recebe um id via método get e exclui o registro com esse id
-     * @param 
+     * @param int
+     * @return redirect
      */
     public function deletarIndicador($id){
         $exames = Exame::find($id);

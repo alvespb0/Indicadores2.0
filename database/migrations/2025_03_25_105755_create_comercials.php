@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('clientesNovos');
             $table->integer('renovacoes');
             $table->float('valorTotal');
-            $table->string('competencia', 20);
+            $table->date('competencia');
             $table->timestamps();
         });
     }

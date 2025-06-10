@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('treinamentosRealizados');
             $table->integer('laudosVendidos');
             $table->integer('laudosEmitidos');
-            $table->string('competencia');
+            $table->date('competencia');
             $table->timestamps();
         });
     }

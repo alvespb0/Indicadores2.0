@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('laboratoriais');
             $table->integer('raiox');
             $table->integer('complementares');
-            $table->string('competencia', 20);
+            $table->date('competencia');
             $table->timestamps();
         });
     }

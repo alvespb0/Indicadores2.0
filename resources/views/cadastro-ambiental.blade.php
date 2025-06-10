@@ -141,7 +141,7 @@ if($setor !== 'ambiental' && $setor !== 'admin'){
 
             const formData = new FormData(this); // Cria o FormData com os dados do formulário
 
-            fetch('{{ route('ambiental.cadastrar') }}', { // Aponte para a rota de cadastro
+            fetch('{{ route('ambiental.cadastrar') }}', { 
                 method: 'POST',
                 body: formData, // Envia o FormData diretamente
                 headers: {

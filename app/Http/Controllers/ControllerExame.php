@@ -23,17 +23,15 @@ class ControllerExame extends Controller
                 'competencia' => 'required|date_format:Y-m', // Validando o formato da competência (YYYY-MM)
             ]);
         
-            Carbon::setLocale('pt_BR');
-            $competenciaFormatted = Carbon::parse($validatedData['competencia'] . '-01') 
-            ->translatedFormat('F \\d\\e Y'); #formata como 'fevereiro de 2025'      
-        
+            $dataCompetencia = $validatedData['competencia'] . '-01';
+
             $exame = Exame::create([
                 'clinicos' => $validatedData['clinicos'],
                 'audiometrias' => $validatedData['audiometrias'],
                 'laboratoriais' => $validatedData['laboratoriais'],
                 'raiox' => $validatedData['raioX'],
                 'complementares' => $validatedData['complementares'],
-                'competencia' => $competenciaFormatted
+                'competencia' => $dataCompetencia
             ]);
 
 	    return response()->json([

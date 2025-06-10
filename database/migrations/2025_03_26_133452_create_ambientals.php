@@ -16,7 +16,7 @@ return new class extends Migration
             $table->integer('orcamentosRealizados');
             $table->integer('orcamentosAprovados');
             $table->integer('clientesNovos');
-            $table->string('competencia');
+            $table->date('competencia');
             $table->timestamps();
         });
     }

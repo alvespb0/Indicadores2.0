@@ -224,7 +224,7 @@ if(count($indicadores) > 1){
                                 <tbody>
                                     <?php foreach($indicadores as $i):?>
                                     <tr>
-                                        <td class="text-center"><?php echo $i->competencia ?></td>
+                                        <td class="text-center">{{ \Carbon\Carbon::parse($item->competencia)->translatedFormat('F \d\e Y') }}</td>
                                         <td class="text-center"><?php echo $i->levantamentoRealizados ?></td>
                                         <td class="text-center"><?php echo $i->treinamentosRealizados ?></td>
                                         <td class="text-center"><?php echo $i->laudosVendidos ?></td>

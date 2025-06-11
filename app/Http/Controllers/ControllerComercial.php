@@ -48,15 +48,15 @@ class ControllerComercial extends Controller
      * se não, retorna todos os exames
      */
     public function getComercial(Request $request){
-        $mes = $request->query('mes');
-        $ano = $request->query('ano');
+        $query = Comercial::query();
 
-        if ($mes && $ano) {
-            $competencia = "$mes de $ano";
-            $indicadores = Comercial::where('competencia', $competencia)->get();
-        } else {
-            $indicadores = Comercial::all()->orderBy('competencia');
+        if ($request->filled('competencia')) {
+            [$ano, $mes] = explode('-', $request->competencia);
+            $query->whereYear('competencia', $ano)
+                ->whereMonth('competencia', $mes);
         }
+
+        $indicadores = $query->orderBy('competencia', 'desc')->get();
         return view('visualizar-comercial', compact('indicadores'));
     }
 

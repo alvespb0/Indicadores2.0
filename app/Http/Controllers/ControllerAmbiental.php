@@ -52,15 +52,16 @@ class ControllerAmbiental extends Controller
      * @return Array
      */
     public function getAmbiental(Request $request){
-        $mes = $request->query('mes');
-        $ano = $request->query('ano');
+        $query = Ambiental::query();
 
-        if ($mes && $ano) {
-            $competencia = "$mes de $ano";
-            $indicadores = Ambiental::where('competencia', $competencia)->get();
-        } else {
-            $indicadores = Ambiental::all();
+        if ($request->filled('competencia')) {
+            [$ano, $mes] = explode('-', $request->competencia);
+            $query->whereYear('competencia', $ano)
+                ->whereMonth('competencia', $mes);
         }
+
+        $indicadores = $query->orderBy('competencia', 'desc')->get();
+        
         return view('visualizar-ambiental', compact('indicadores'));
     }
 

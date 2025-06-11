@@ -52,15 +52,15 @@ class ControllerExame extends Controller
      * se não, retorna todos os exames
      */
     public function getExames(Request $request){
-        $mes = $request->query('mes');
-        $ano = $request->query('ano');
+        $query = Exame::query();
 
-        if ($mes && $ano) {
-            $competencia = "$mes de $ano";
-            $exames = Exame::where('competencia', $competencia)->get();
-        } else {
-            $exames = Exame::all();
+        if ($request->filled('competencia')) {
+            [$ano, $mes] = explode('-', $request->competencia);
+            $query->whereYear('competencia', $ano)
+                ->whereMonth('competencia', $mes);
         }
+
+        $exames = $query->orderBy('competencia', 'desc')->get();
         return view('visualizar-exames', compact('exames'));
     }
 

@@ -259,7 +259,7 @@ if(count($exames) > 1){
                                 <tbody>
                                     <?php foreach ($exames as $exame): ?>
                                         <tr>
-                                        <td class="text-center"><?php echo $exame->competencia; ?></td>
+                                        <td class="text-center">{{ \Carbon\Carbon::parse($exame->competencia)->translatedFormat('F \d\e Y') }}</td>
                                         <td class="text-center"><?php echo $exame->clinicos; ?></td>
                                         <td class="text-center"><?php echo $exame->audiometrias; ?></td>
                                         <td class="text-center"><?php echo $exame->laboratoriais; ?></td>

@@ -55,15 +55,16 @@ class ControllerSeguranca extends Controller
      * @return Array
      */
     public function getSeguranca(Request $request){
-        $mes = $request->query('mes');
-        $ano = $request->query('ano');
+        $query = Seguranca::query();
 
-        if ($mes && $ano) {
-            $competencia = "$mes de $ano";
-            $indicadores = Seguranca::where('competencia', $competencia)->get();
-        } else {
-            $indicadores = Seguranca::all();
+        if ($request->filled('competencia')) {
+            [$ano, $mes] = explode('-', $request->competencia);
+            $query->whereYear('competencia', $ano)
+                ->whereMonth('competencia', $mes);
         }
+
+        $indicadores = $query->orderBy('competencia', 'desc')->get();
+
         return view('visualizar-seguranca', compact('indicadores'));
     }
 

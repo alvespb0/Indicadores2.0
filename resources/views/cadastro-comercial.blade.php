@@ -108,7 +108,7 @@ if($setor !== 'comercial' && $setor !== 'admin'){
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="valorTotal" class="form-label">
+                                    <label for="valorTotal" class="form-label" step="0.01">
                                         <i class="fas fa-dollar-sign me-2"></i>Valor Total ($)
                                     </label>
                                     <div class="input-group">

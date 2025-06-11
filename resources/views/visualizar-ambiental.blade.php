@@ -63,41 +63,15 @@ if(count($indicadores) > 1){
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title mb-4">Indicadores do Setor Ambiental</h5>
-                        <form name = "filterForm" id="filterForm" action="/visualizar-ambiental" method="GET" class="d-flex justify-content">
-                            <div class="input-group" style="width: 420px;">
-                                <select class="form-select" name="mes" id="mes">
-                                    <option value="">Selecione o Mês</option>
-                                    <option value="Janeiro">Janeiro</option>
-                                    <option value="Fevereiro">Fevereiro</option>
-                                    <option value="Março">Março</option>
-                                    <option value="Abril">Abril</option>
-                                    <option value="Maio">Maio</option>
-                                    <option value="Junho">Junho</option>
-                                    <option value="Julho">Julho</option>
-                                    <option value="Agosto">Agosto</option>
-                                    <option value="Setembro">Setembro</option>
-                                    <option value="Outubro">Outubro</option>
-                                    <option value="Novembro">Novembro</option>
-                                    <option value="Dezembro">Dezembro</option>
-                                </select>
-
-                                <select class="form-select" name="ano" id="ano">
-                                    <option value="">Selecione o Ano</option>
-                                    <?php 
-                                        $anoAtual = date('Y'); 
-                                        for ($i = $anoAtual; $i >= $anoAtual - 10; $i--) { 
-                                            echo "<option value='$i'>$i</option>"; 
-                                        }
-                                    ?>
-                                </select>
-
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-calendar-alt"></i> Filtrar
-                                </button>
-                            </div>
-                        </form>
-                        <br>
-
+                        <div class="col-sm-6">
+                            <form name = "filterForm" id="filterForm" action="/visualizar-ambiental" method="GET" class="d-flex justify-content">
+                                    <input type="month" name="competencia" class="form-control form-control-sm w-auto">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-calendar-alt"></i> Filtrar
+                                    </button>
+                            </form>                            
+                        </div>
+                        
                         <?php if(count($indicadores) < 1){
                                 echo "<center><h4> Nenhum indicador cadastrado nessa competência </h4></center>";
                             }

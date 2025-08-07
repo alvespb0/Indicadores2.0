@@ -120,6 +120,18 @@ if($setor !== 'exames' && $setor !== 'admin'){
                                 </div>
 
                                 <div class="col-md-6 mb-3">
+                                    <label for="outros_exames" class="form-label">
+                                        <i class="fas fa-plus-circle me-2"></i>Outros Exames
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-plus"></i>
+                                        </span>
+                                        <input type="number" class="form-control" id="outros_exames" name="outros_exames" required>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
                                     <label for="competencia" class="form-label">
                                         <i class="fas fa-calendar-alt me-2"></i>Competência
                                     </label>

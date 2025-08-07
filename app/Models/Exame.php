@@ -12,6 +12,7 @@ class Exame extends Model
         'laboratoriais',
         'raiox',
         'complementares',
+        'outros_exames',
         'competencia',
     ];
 

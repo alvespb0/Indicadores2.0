@@ -20,6 +20,7 @@ class ControllerExame extends Controller
                 'laboratoriais' => 'required|numeric',
                 'raioX' => 'required|numeric',
                 'complementares' => 'required|numeric',
+                'outros_exames' => 'required|numeric',
                 'competencia' => 'required|date_format:Y-m', // Validando o formato da competência (YYYY-MM)
             ]);
         
@@ -31,6 +32,7 @@ class ControllerExame extends Controller
                 'laboratoriais' => $validatedData['laboratoriais'],
                 'raiox' => $validatedData['raioX'],
                 'complementares' => $validatedData['complementares'],
+                'outros_exames' => $validatedData['outros_exames'],
                 'competencia' => $dataCompetencia
             ]);
 

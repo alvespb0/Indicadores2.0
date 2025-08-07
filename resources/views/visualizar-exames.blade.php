@@ -13,7 +13,8 @@ if(count($exames) > 1){
         'audiometrias' => 0,
         'laboratoriais' => 0,
         'raiox' => 0,
-        'complementares' => 0
+        'complementares' => 0,
+        'outros_exames' => 0
     ];
 
     foreach ($exames as $totalExame) {
@@ -22,6 +23,7 @@ if(count($exames) > 1){
         $totalExames['laboratoriais'] += $totalExame->laboratoriais;
         $totalExames['raiox'] += $totalExame->raiox;
         $totalExames['complementares'] += $totalExame->complementares;
+        $totalExames['outros_exames'] += $totalExame->outros_exames;
     }
 }
 
@@ -145,6 +147,17 @@ if(count($exames) > 1){
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="col-md-4">
+                                <div class="card h-100">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-plus-circle sector-icon"></i>
+                                        <h6 class="card-title">Outros Exames</h6>
+                                        <h3 class="mb-0"><?php echo $totalExames['outros_exames']; ?></h3>
+                                        <small class="text-muted">Total do Período</small>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
 
@@ -212,6 +225,17 @@ if(count($exames) > 1){
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-md-4">
+                                <div class="card h-100">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-plus-circle sector-icon"></i>
+                                        <h6 class="card-title">Outros Exames</h6>
+                                        <h3 class="mb-0"><?php echo $e->outros_exames; ?></h3>
+                                        <small class="text-muted">Total do Mês</small>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                         <?php endforeach;} ?>
                         <!-- Tabela de Histórico -->
@@ -225,6 +249,7 @@ if(count($exames) > 1){
                                         <th class="text-center">Exames Laboratoriais</th>
                                         <th class="text-center">Raio X</th>
                                         <th class="text-center">Exames Complementares</th>
+                                        <th class="text-center">Outros Exames</th>
                                         @if($setor == 'admin')
                                         <th class="text-center">Ação</th>
                                         @endif
@@ -239,6 +264,8 @@ if(count($exames) > 1){
                                         <td class="text-center"><?php echo $exame->laboratoriais; ?></td>
                                         <td class="text-center"><?php echo $exame->raiox ; ?></td>
                                         <td class="text-center"><?php echo $exame->complementares; ?></td>
+                                        <td class="text-center">{{$exame->outros_exames}}</td>
+
                                         @if($setor == 'admin')
                                         <td class="text-center"><a href="{{ route('exame.deletar', ['id'=>$exame->id]) }}" class = "btn btn-outline-danger" onclick="return confirm('Tem certeza que deseja excluir esse indicador?')">deletar</a></td>
                                         @endif

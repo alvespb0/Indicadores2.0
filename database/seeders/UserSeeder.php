@@ -17,8 +17,8 @@ class UserSeeder extends Seeder
     {
         Usuario::create([
             'usuario' => 'admin',
-            'email' => 'arthur@segmetre.com.br',
-            'senha' => Hash::make('teamomae6@'), // Hash da senha
+            'email' => 'ti@segmetreambiental.com.br',
+            'senha' => Hash::make('alterar123'), 
             'setor' => 'admin'
         ]);
     }

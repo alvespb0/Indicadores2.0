@@ -108,14 +108,50 @@ if($setor !== 'exames' && $setor !== 'admin'){
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="complementares" class="form-label">
-                                        <i class="fas fa-plus-circle me-2"></i>Exames Complementares
+                                    <label for="ECG" class="form-label">
+                                        <i class="fas fa-plus-circle me-2"></i>ECG
                                     </label>
                                     <div class="input-group">
                                         <span class="input-group-text">
                                             <i class="fas fa-plus"></i>
                                         </span>
-                                        <input type="number" class="form-control" id="complementares" name="complementares" required>
+                                        <input type="number" class="form-control" id="ECG" name="ecg" required>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="EEG" class="form-label">
+                                        <i class="fas fa-plus-circle me-2"></i>EEG
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-plus"></i>
+                                        </span>
+                                        <input type="number" class="form-control" id="EEG" name="eeg" required>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="espiro" class="form-label">
+                                        <i class="fas fa-plus-circle me-2"></i>Espirometria
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-plus"></i>
+                                        </span>
+                                        <input type="number" class="form-control" id="espiro" name="espiro" required>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="acuidade" class="form-label">
+                                        <i class="fas fa-plus-circle me-2"></i>Acuidade Visual
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-plus"></i>
+                                        </span>
+                                        <input type="number" class="form-control" id="acuidade" name="acuidade" required>
                                     </div>
                                 </div>
 

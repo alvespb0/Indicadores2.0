@@ -13,7 +13,10 @@ if(count($exames) > 1){
         'audiometrias' => 0,
         'laboratoriais' => 0,
         'raiox' => 0,
-        'complementares' => 0,
+        'eeg' => 0,
+        'ecg' => 0,
+        'espirometria' => 0,
+        'acuidade' => 0,
         'outros_exames' => 0
     ];
 
@@ -22,7 +25,10 @@ if(count($exames) > 1){
         $totalExames['audiometrias'] += $totalExame->audiometrias;
         $totalExames['laboratoriais'] += $totalExame->laboratoriais;
         $totalExames['raiox'] += $totalExame->raiox;
-        $totalExames['complementares'] += $totalExame->complementares;
+        $totalExames['eeg'] += $totalExame->eeg;
+        $totalExames['ecg'] += $totalExame->ecg;
+        $totalExames['acuidade'] += $totalExame->acuidade;
+        $totalExames['espirometria'] += $totalExame->espirometria;
         $totalExames['outros_exames'] += $totalExame->outros_exames;
     }
 }
@@ -141,13 +147,42 @@ if(count($exames) > 1){
                                 <div class="card h-100">
                                     <div class="card-body text-center">
                                         <i class="fas fa-plus-circle sector-icon"></i>
-                                        <h6 class="card-title">Complementares</h6>
-                                        <h3 class="mb-0"><?php echo $totalExames['complementares']; ?></h3>
+                                        <h6 class="card-title">EEG</h6>
+                                        <h3 class="mb-0"><?php echo $totalExames['eeg']; ?></h3>
                                         <small class="text-muted">Total do Período</small>
                                     </div>
                                 </div>
                             </div>
-
+                            <div class="col-md-4">
+                                <div class="card h-100">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-plus-circle sector-icon"></i>
+                                        <h6 class="card-title">ECG</h6>
+                                        <h3 class="mb-0"><?php echo $totalExames['ecg']; ?></h3>
+                                        <small class="text-muted">Total do Período</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card h-100">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-plus-circle sector-icon"></i>
+                                        <h6 class="card-title">Espirometria</h6>
+                                        <h3 class="mb-0"><?php echo $totalExames['espirometria']; ?></h3>
+                                        <small class="text-muted">Total do Período</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card h-100">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-plus-circle sector-icon"></i>
+                                        <h6 class="card-title">Acuidade Visual</h6>
+                                        <h3 class="mb-0"><?php echo $totalExames['acuidade']; ?></h3>
+                                        <small class="text-muted">Total do Período</small>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="col-md-4">
                                 <div class="card h-100">
                                     <div class="card-body text-center">
@@ -219,8 +254,39 @@ if(count($exames) > 1){
                                 <div class="card h-100">
                                     <div class="card-body text-center">
                                         <i class="fas fa-plus-circle sector-icon"></i>
-                                        <h6 class="card-title">Exames Complementares</h6>
-                                        <h3 class="mb-0"><?php echo $e->complementares;?></h3>
+                                        <h6 class="card-title">ECG</h6>
+                                        <h3 class="mb-0"><?php echo $e->ecg;?></h3>
+                                        <small class="text-muted">Total do Mês</small>
+                                    </div>
+                                </div>
+                            </div>
+          
+                            <div class="col-md-4">
+                                <div class="card h-100">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-plus-circle sector-icon"></i>
+                                        <h6 class="card-title">EEG</h6>
+                                        <h3 class="mb-0"><?php echo $e->eeg;?></h3>
+                                        <small class="text-muted">Total do Mês</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card h-100">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-plus-circle sector-icon"></i>
+                                        <h6 class="card-title">Espirometria</h6>
+                                        <h3 class="mb-0"><?php echo $e->espirometria;?></h3>
+                                        <small class="text-muted">Total do Mês</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card h-100">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-plus-circle sector-icon"></i>
+                                        <h6 class="card-title">Acuidade Visual</h6>
+                                        <h3 class="mb-0"><?php echo $e->acuidade;?></h3>
                                         <small class="text-muted">Total do Mês</small>
                                     </div>
                                 </div>
@@ -248,7 +314,10 @@ if(count($exames) > 1){
                                         <th class="text-center">Audiometrias</th>
                                         <th class="text-center">Exames Laboratoriais</th>
                                         <th class="text-center">Raio X</th>
-                                        <th class="text-center">Exames Complementares</th>
+                                        <th class="text-center">ECG</th>
+                                        <th class="text-center">EEG</th>
+                                        <th class="text-center">Espiro</th>
+                                        <th class="text-center">Acuidade</th>
                                         <th class="text-center">Outros Exames</th>
                                         @if($setor == 'admin')
                                         <th class="text-center">Ação</th>
@@ -263,7 +332,10 @@ if(count($exames) > 1){
                                         <td class="text-center"><?php echo $exame->audiometrias; ?></td>
                                         <td class="text-center"><?php echo $exame->laboratoriais; ?></td>
                                         <td class="text-center"><?php echo $exame->raiox ; ?></td>
-                                        <td class="text-center"><?php echo $exame->complementares; ?></td>
+                                        <td class="text-center"><?php echo $exame->ecg; ?></td>
+                                        <td class="text-center"><?php echo $exame->eeg; ?></td>
+                                        <td class="text-center"><?php echo $exame->espirometria; ?></td>
+                                        <td class="text-center"><?php echo $exame->acuidade; ?></td>
                                         <td class="text-center">{{$exame->outros_exames}}</td>
 
                                         @if($setor == 'admin')

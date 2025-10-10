@@ -19,7 +19,10 @@ class ControllerExame extends Controller
                 'audiometrias' => 'required|numeric',
                 'laboratoriais' => 'required|numeric',
                 'raioX' => 'required|numeric',
-                'complementares' => 'required|numeric',
+                'ecg' => 'required|numeric',
+                'eeg' => 'required|numeric',
+                'espiro' => 'required|numeric',
+                'acuidade' => 'required|numeric',                
                 'outros_exames' => 'required|numeric',
                 'competencia' => 'required|date_format:Y-m', // Validando o formato da competência (YYYY-MM)
             ]);
@@ -31,7 +34,10 @@ class ControllerExame extends Controller
                 'audiometrias' => $validatedData['audiometrias'],
                 'laboratoriais' => $validatedData['laboratoriais'],
                 'raiox' => $validatedData['raioX'],
-                'complementares' => $validatedData['complementares'],
+                'acuidade' => $validatedData['acuidade'],
+                'ecg' => $validatedData['ecg'],
+                'eeg' => $validatedData['eeg'],
+                'espirometria' => $validatedData['espiro'],
                 'outros_exames' => $validatedData['outros_exames'],
                 'competencia' => $dataCompetencia
             ]);

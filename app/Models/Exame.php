@@ -11,7 +11,10 @@ class Exame extends Model
         'audiometrias',
         'laboratoriais',
         'raiox',
-        'complementares',
+        'eeg',
+        'ecg',
+        'acuidade',
+        'espirometria',
         'outros_exames',
         'competencia',
     ];

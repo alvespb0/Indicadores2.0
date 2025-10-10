@@ -17,7 +17,10 @@ return new class extends Migration
             $table->integer('audiometrias');
             $table->integer('laboratoriais');
             $table->integer('raiox');
-            $table->integer('complementares');
+            $table->integer('ecg');
+            $table->integer('eeg');
+            $table->integer('acuidade');
+            $table->integer('espirometria');
             $table->date('competencia');
             $table->timestamps();
         });

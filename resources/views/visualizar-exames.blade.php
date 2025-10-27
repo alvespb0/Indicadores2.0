@@ -1,39 +1,3 @@
-
-<?php
-$setor = Session::get('setor');
-$usuario = Session::get('usuario');
-if($setor !== 'exames' && $setor !== 'admin'){
-    header("Location: http://{$_SERVER['HTTP_HOST']}/login");
-    exit;
-}
-$totalExames = [];
-if(count($exames) > 1){
-    $totalExames = [
-        'clinicos' => 0,
-        'audiometrias' => 0,
-        'laboratoriais' => 0,
-        'raiox' => 0,
-        'eeg' => 0,
-        'ecg' => 0,
-        'espirometria' => 0,
-        'acuidade' => 0,
-        'outros_exames' => 0
-    ];
-
-    foreach ($exames as $totalExame) {
-        $totalExames['clinicos'] += $totalExame->clinicos;
-        $totalExames['audiometrias'] += $totalExame->audiometrias;
-        $totalExames['laboratoriais'] += $totalExame->laboratoriais;
-        $totalExames['raiox'] += $totalExame->raiox;
-        $totalExames['eeg'] += $totalExame->eeg;
-        $totalExames['ecg'] += $totalExame->ecg;
-        $totalExames['acuidade'] += $totalExame->acuidade;
-        $totalExames['espirometria'] += $totalExame->espirometria;
-        $totalExames['outros_exames'] += $totalExame->outros_exames;
-    }
-}
-
-?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -82,18 +46,19 @@ if(count($exames) > 1){
                     <div class="card-body">
                         <h5 class="card-title mb-4">Indicadores do Setor de Exames</h5>
                         <div class="col-sm-6">
-                            <form name = "filterForm" id="filterForm" action="/visualizar-exames" method="GET" class="d-flex justify-content">
+                            <form name="filterForm" id="filterForm" action="/visualizar-exames" method="GET" class="d-flex justify-content">
                                 <input type="month" name="competencia" class="form-control form-control-sm w-auto">
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-calendar-alt"></i> Filtrar
                                 </button>
                             </form>                            
                         </div>
-                        <?php if(count($exames) < 1){
-                                echo "<center><h4> Nenhum indicador cadastrado nessa competência </h4></center>";
-                            }
-                        ?>
-                        <?php if(count($totalExames) > 0){?>
+
+                        @if($exames->count() < 1)
+                            <center><h4>Nenhum indicador cadastrado nessa competência</h4></center>
+                        @endif
+
+                        @if(count($totalExames) > 0)
                         <div class="row g-4">
                             <!-- Card Exames Clínicos -->
                             <div class="col-md-4">
@@ -101,7 +66,7 @@ if(count($exames) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-user-md sector-icon"></i>
                                         <h6 class="card-title">Exames Clínicos</h6>
-                                        <h3 class="mb-0"><?php echo $totalExames['clinicos'];?></h3>
+                                        <h3 class="mb-0">{{ $totalExames['clinicos'] }}</h3>
                                         <small class="text-muted">Total do Período</small>
                                     </div>
                                 </div>
@@ -113,7 +78,7 @@ if(count($exames) > 1){
                                     <div class="card-body text-center">
                                     <i class="fas fa-deaf sector-icon"></i>
                                     <h6 class="card-title">Audiometrias</h6>
-                                        <h3 class="mb-0"><?php echo $totalExames['audiometrias'];?></h3>
+                                        <h3 class="mb-0">{{ $totalExames['audiometrias'] }}</h3>
                                         <small class="text-muted">Total do Período</small>
                                     </div>
                                 </div>
@@ -125,7 +90,7 @@ if(count($exames) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-flask sector-icon"></i>
                                         <h6 class="card-title">Exames Laboratoriais</h6>
-                                        <h3 class="mb-0"><?php echo $totalExames['laboratoriais'];?></h3>
+                                        <h3 class="mb-0">{{ $totalExames['laboratoriais'] }}</h3>
                                         <small class="text-muted">Total do Período</small>
                                     </div>
                                 </div>
@@ -136,7 +101,7 @@ if(count($exames) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-x-ray sector-icon"></i>
                                         <h6 class="card-title">Raio X</h6>
-                                        <h3 class="mb-0"><?php echo $totalExames['raiox'];?></h3>
+                                        <h3 class="mb-0">{{ $totalExames['raiox'] }}</h3>
                                         <small class="text-muted">Total do Período</small>
                                     </div>
                                 </div>
@@ -148,7 +113,7 @@ if(count($exames) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-plus-circle sector-icon"></i>
                                         <h6 class="card-title">EEG</h6>
-                                        <h3 class="mb-0"><?php echo $totalExames['eeg']; ?></h3>
+                                        <h3 class="mb-0">{{ $totalExames['eeg'] }}</h3>
                                         <small class="text-muted">Total do Período</small>
                                     </div>
                                 </div>
@@ -158,7 +123,7 @@ if(count($exames) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-plus-circle sector-icon"></i>
                                         <h6 class="card-title">ECG</h6>
-                                        <h3 class="mb-0"><?php echo $totalExames['ecg']; ?></h3>
+                                        <h3 class="mb-0">{{ $totalExames['ecg'] }}</h3>
                                         <small class="text-muted">Total do Período</small>
                                     </div>
                                 </div>
@@ -168,7 +133,7 @@ if(count($exames) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-plus-circle sector-icon"></i>
                                         <h6 class="card-title">Espirometria</h6>
-                                        <h3 class="mb-0"><?php echo $totalExames['espirometria']; ?></h3>
+                                        <h3 class="mb-0">{{ $totalExames['espirometria'] }}</h3>
                                         <small class="text-muted">Total do Período</small>
                                     </div>
                                 </div>
@@ -178,7 +143,7 @@ if(count($exames) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-plus-circle sector-icon"></i>
                                         <h6 class="card-title">Acuidade Visual</h6>
-                                        <h3 class="mb-0"><?php echo $totalExames['acuidade']; ?></h3>
+                                        <h3 class="mb-0">{{ $totalExames['acuidade'] }}</h3>
                                         <small class="text-muted">Total do Período</small>
                                     </div>
                                 </div>
@@ -188,18 +153,14 @@ if(count($exames) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-plus-circle sector-icon"></i>
                                         <h6 class="card-title">Outros Exames</h6>
-                                        <h3 class="mb-0"><?php echo $totalExames['outros_exames']; ?></h3>
+                                        <h3 class="mb-0">{{ $totalExames['outros_exames'] }}</h3>
                                         <small class="text-muted">Total do Período</small>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-
-                        <!-- _______________________________________________________________________________________ -->
-
-                        
-                        <?php }else{ foreach ($exames as $e): ?>
+                        @else
+                            @foreach ($exames as $e)
                             <div class="row g-4">
                             <!-- Card Exames Clínicos -->
                             <div class="col-md-4">
@@ -207,7 +168,7 @@ if(count($exames) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-user-md sector-icon"></i>
                                         <h6 class="card-title">Exames Clínicos</h6>
-                                        <h3 class="mb-0"><?php echo $e->clinicos;?></h3>
+                                        <h3 class="mb-0">{{ $e->clinicos }}</h3>
                                         <small class="text-muted">Total do Mês</small>
                                     </div>
                                 </div>
@@ -219,7 +180,7 @@ if(count($exames) > 1){
                                     <div class="card-body text-center">
                                     <i class="fas fa-deaf sector-icon"></i>
                                     <h6 class="card-title">Audiometrias</h6>
-                                        <h3 class="mb-0"><?php echo $e->audiometrias;?></h3>
+                                        <h3 class="mb-0">{{ $e->audiometrias }}</h3>
                                         <small class="text-muted">Total do Mês</small>
                                     </div>
                                 </div>
@@ -231,7 +192,7 @@ if(count($exames) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-flask sector-icon"></i>
                                         <h6 class="card-title">Exames Laboratoriais</h6>
-                                        <h3 class="mb-0"><?php echo $e->laboratoriais;?></h3>
+                                        <h3 class="mb-0">{{ $e->laboratoriais }}</h3>
                                         <small class="text-muted">Total do Mês</small>
                                     </div>
                                 </div>
@@ -243,7 +204,7 @@ if(count($exames) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-x-ray sector-icon"></i>
                                         <h6 class="card-title">Raio X</h6>
-                                        <h3 class="mb-0"><?php echo $e->raiox;?></h3>
+                                        <h3 class="mb-0">{{ $e->raiox }}</h3>
                                         <small class="text-muted">Total do Mês</small>
                                     </div>
                                 </div>
@@ -255,7 +216,7 @@ if(count($exames) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-plus-circle sector-icon"></i>
                                         <h6 class="card-title">ECG</h6>
-                                        <h3 class="mb-0"><?php echo $e->ecg;?></h3>
+                                        <h3 class="mb-0">{{ $e->ecg }}</h3>
                                         <small class="text-muted">Total do Mês</small>
                                     </div>
                                 </div>
@@ -266,7 +227,7 @@ if(count($exames) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-plus-circle sector-icon"></i>
                                         <h6 class="card-title">EEG</h6>
-                                        <h3 class="mb-0"><?php echo $e->eeg;?></h3>
+                                        <h3 class="mb-0">{{ $e->eeg }}</h3>
                                         <small class="text-muted">Total do Mês</small>
                                     </div>
                                 </div>
@@ -276,7 +237,7 @@ if(count($exames) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-plus-circle sector-icon"></i>
                                         <h6 class="card-title">Espirometria</h6>
-                                        <h3 class="mb-0"><?php echo $e->espirometria;?></h3>
+                                        <h3 class="mb-0">{{ $e->espirometria }}</h3>
                                         <small class="text-muted">Total do Mês</small>
                                     </div>
                                 </div>
@@ -286,7 +247,7 @@ if(count($exames) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-plus-circle sector-icon"></i>
                                         <h6 class="card-title">Acuidade Visual</h6>
-                                        <h3 class="mb-0"><?php echo $e->acuidade;?></h3>
+                                        <h3 class="mb-0">{{ $e->acuidade }}</h3>
                                         <small class="text-muted">Total do Mês</small>
                                     </div>
                                 </div>
@@ -296,14 +257,16 @@ if(count($exames) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-plus-circle sector-icon"></i>
                                         <h6 class="card-title">Outros Exames</h6>
-                                        <h3 class="mb-0"><?php echo $e->outros_exames; ?></h3>
+                                        <h3 class="mb-0">{{ $e->outros_exames }}</h3>
                                         <small class="text-muted">Total do Mês</small>
                                     </div>
                                 </div>
                             </div>
 
                         </div>
-                        <?php endforeach;} ?>
+                        @endforeach
+                        @endif
+
                         <!-- Tabela de Histórico -->
                         <div class="table-responsive mt-4">
                             <table class="table">
@@ -319,30 +282,30 @@ if(count($exames) > 1){
                                         <th class="text-center">Espiro</th>
                                         <th class="text-center">Acuidade</th>
                                         <th class="text-center">Outros Exames</th>
-                                        @if($setor == 'admin')
+                                        @if(Session::get('setor') == 'admin')
                                         <th class="text-center">Ação</th>
                                         @endif
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($exames as $exame): ?>
+                                    @foreach ($exames as $exame)
                                         <tr>
                                         <td class="text-center">{{ \Carbon\Carbon::parse($exame->competencia)->translatedFormat('F \d\e Y') }}</td>
-                                        <td class="text-center"><?php echo $exame->clinicos; ?></td>
-                                        <td class="text-center"><?php echo $exame->audiometrias; ?></td>
-                                        <td class="text-center"><?php echo $exame->laboratoriais; ?></td>
-                                        <td class="text-center"><?php echo $exame->raiox ; ?></td>
-                                        <td class="text-center"><?php echo $exame->ecg; ?></td>
-                                        <td class="text-center"><?php echo $exame->eeg; ?></td>
-                                        <td class="text-center"><?php echo $exame->espirometria; ?></td>
-                                        <td class="text-center"><?php echo $exame->acuidade; ?></td>
-                                        <td class="text-center">{{$exame->outros_exames}}</td>
+                                        <td class="text-center">{{ $exame->clinicos }}</td>
+                                        <td class="text-center">{{ $exame->audiometrias }}</td>
+                                        <td class="text-center">{{ $exame->laboratoriais }}</td>
+                                        <td class="text-center">{{ $exame->raiox }}</td>
+                                        <td class="text-center">{{ $exame->ecg }}</td>
+                                        <td class="text-center">{{ $exame->eeg }}</td>
+                                        <td class="text-center">{{ $exame->espirometria }}</td>
+                                        <td class="text-center">{{ $exame->acuidade }}</td>
+                                        <td class="text-center">{{ $exame->outros_exames }}</td>
 
-                                        @if($setor == 'admin')
-                                        <td class="text-center"><a href="{{ route('exame.deletar', ['id'=>$exame->id]) }}" class = "btn btn-outline-danger" onclick="return confirm('Tem certeza que deseja excluir esse indicador?')">deletar</a></td>
+                                        @if(Session::get('setor') == 'admin')
+                                        <td class="text-center"><a href="{{ route('exame.deletar', ['id'=>$exame->id]) }}" class="btn btn-outline-danger" onclick="return confirm('Tem certeza que deseja excluir esse indicador?')">deletar</a></td>
                                         @endif
                                         </tr>
-                                    <?php endforeach; ?>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -368,4 +331,4 @@ if(count($exames) > 1){
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
-</html> 
+</html>

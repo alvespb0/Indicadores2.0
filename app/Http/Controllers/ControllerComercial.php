@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Comercial;
+use Illuminate\Support\Facades\Session;
 
 class ControllerComercial extends Controller
 {
@@ -48,6 +49,12 @@ class ControllerComercial extends Controller
      * se não, retorna todos os exames
      */
     public function getComercial(Request $request){
+        // Verificação de autorização
+        $setor = Session::get('setor');
+        if($setor !== 'comercial' && $setor !== 'admin'){
+            return redirect('/login');
+        }
+
         $query = Comercial::query();
 
         if ($request->filled('competencia')) {
@@ -57,7 +64,20 @@ class ControllerComercial extends Controller
         }
 
         $indicadores = $query->orderBy('competencia', 'desc')->get();
-        return view('visualizar-comercial', compact('indicadores'));
+
+        // Calcular totais se houver mais de um indicador
+        $totalComercial = [];
+        if($indicadores->count() > 1){
+            $totalComercial = [
+                'propostasEnviadas' => $indicadores->sum('propostasEnviadas'),
+                'propostasFechadas' => $indicadores->sum('propostasFechadas'),
+                'clientesNovos' => $indicadores->sum('clientesNovos'),
+                'renovacoes' => $indicadores->sum('renovacoes'),
+                'valorTotal' => $indicadores->sum('valorTotal')
+            ];
+        }
+
+        return view('visualizar-comercial', compact('indicadores', 'totalComercial'));
     }
 
     /**

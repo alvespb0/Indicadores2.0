@@ -1,29 +1,3 @@
-<?php
-$setor = Session::get('setor');
-$usuario = Session::get('usuario');
-if($setor !== 'comercial' && $setor !== 'admin'){
-    header("Location: http://{$_SERVER['HTTP_HOST']}/login");
-    exit;
-}
-$totalComercial = [];
-if(count($indicadores) > 1){
-    $totalComercial = [
-        'propostasEnviadas' => 0,
-        'propostasFechadas' => 0,
-        'clientesNovos' => 0,
-        'renovacoes' => 0,
-        'valorTotal' => 0
-    ];
-
-    foreach ($indicadores as $totalIndicadores) {
-        $totalComercial['propostasEnviadas'] += (int) $totalIndicadores['propostasEnviadas'];
-        $totalComercial['propostasFechadas'] += (int) $totalIndicadores['propostasFechadas'];
-        $totalComercial['clientesNovos'] += (int) $totalIndicadores['clientesNovos'];
-        $totalComercial['renovacoes'] += (int) $totalIndicadores['renovacoes'];
-        $totalComercial['valorTotal'] += (float) $totalIndicadores['valorTotal'];
-    }
-}
-?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -67,18 +41,19 @@ if(count($indicadores) > 1){
                     <div class="card-body">
                         <h5 class="card-title mb-4">Indicadores do Setor Comercial</h5>
                         <div class="col-sm-6">
-                            <form name = "filterForm" id="filterForm" action="/visualizar-comercial" method="GET" class="d-flex justify-content">
+                            <form name="filterForm" id="filterForm" action="/visualizar-comercial" method="GET" class="d-flex justify-content">
                                 <input type="month" name="competencia" class="form-control form-control-sm w-auto">
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-calendar-alt"></i> Filtrar
                                 </button>
                             </form>                            
                         </div>
-                        <?php if(count($indicadores) < 1){
-                                echo "<center><h4> Nenhum indicador cadastrado nessa competência </h4></center>";
-                            }
-                        ?>
-                        <?php if(count($totalComercial) > 1){?>
+
+                        @if($indicadores->count() < 1)
+                            <center><h4>Nenhum indicador cadastrado nessa competência</h4></center>
+                        @endif
+
+                        @if(count($totalComercial) > 1)
                         <div class="row g-4">
                             <!-- Card Propostas Enviadas -->
                             <div class="col-md-4">
@@ -86,7 +61,7 @@ if(count($indicadores) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-paper-plane sector-icon"></i>
                                         <h6 class="card-title">Propostas Enviadas</h6>
-                                        <h3 class="mb-0"><?php echo $totalComercial['propostasEnviadas']; ?></h3>
+                                        <h3 class="mb-0">{{ $totalComercial['propostasEnviadas'] }}</h3>
                                         <small class="text-muted">Total do Período</small>
                                     </div>
                                 </div>
@@ -98,7 +73,7 @@ if(count($indicadores) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-check-circle sector-icon"></i>
                                         <h6 class="card-title">Propostas Fechadas</h6>
-                                        <h3 class="mb-0"><?php echo $totalComercial['propostasFechadas']; ?></h3>
+                                        <h3 class="mb-0">{{ $totalComercial['propostasFechadas'] }}</h3>
                                         <small class="text-muted">Total do Período</small>
                                     </div>
                                 </div>
@@ -110,7 +85,7 @@ if(count($indicadores) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-user-plus sector-icon"></i>
                                         <h6 class="card-title">Clientes Novos</h6>
-                                        <h3 class="mb-0"> <?php echo $totalComercial['clientesNovos']; ?> </h3>
+                                        <h3 class="mb-0">{{ $totalComercial['clientesNovos'] }}</h3>
                                         <small class="text-muted">Total do Período</small>
                                     </div>
                                 </div>
@@ -122,7 +97,7 @@ if(count($indicadores) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-sync sector-icon"></i>
                                         <h6 class="card-title">Renovações</h6>
-                                        <h3 class="mb-0"><?php echo $totalComercial['renovacoes']; ?></h3>
+                                        <h3 class="mb-0">{{ $totalComercial['renovacoes'] }}</h3>
                                         <small class="text-muted">Total do Período</small>
                                     </div>
                                 </div>
@@ -134,23 +109,22 @@ if(count($indicadores) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-dollar-sign sector-icon"></i>
                                         <h6 class="card-title">Valor Total</h6>
-                                        <h3 class="mb-0"><?php echo $totalComercial['valorTotal']; ?></h3>
+                                        <h3 class="mb-0">{{ $totalComercial['valorTotal'] }}</h3>
                                         <small class="text-muted">Total do Período</small>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <?php }else{
-                            foreach($indicadores as $i):
-                        ?>
-                                                <div class="row g-4">
+                        @else
+                            @foreach($indicadores as $i)
+                            <div class="row g-4">
                             <!-- Card Propostas Enviadas -->
                             <div class="col-md-4">
                                 <div class="card h-100">
                                     <div class="card-body text-center">
                                         <i class="fas fa-paper-plane sector-icon"></i>
                                         <h6 class="card-title">Propostas Enviadas</h6>
-                                        <h3 class="mb-0"><?php echo $i->propostasEnviadas; ?></h3>
+                                        <h3 class="mb-0">{{ $i->propostasEnviadas }}</h3>
                                         <small class="text-muted">Total do Mês</small>
                                     </div>
                                 </div>
@@ -162,7 +136,7 @@ if(count($indicadores) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-check-circle sector-icon"></i>
                                         <h6 class="card-title">Propostas Fechadas</h6>
-                                        <h3 class="mb-0"><?php echo $i->propostasFechadas; ?></h3>
+                                        <h3 class="mb-0">{{ $i->propostasFechadas }}</h3>
                                         <small class="text-muted">Total do Mês</small>
                                     </div>
                                 </div>
@@ -174,7 +148,7 @@ if(count($indicadores) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-user-plus sector-icon"></i>
                                         <h6 class="card-title">Clientes Novos</h6>
-                                        <h3 class="mb-0"> <?php echo $i->clientesNovos; ?> </h3>
+                                        <h3 class="mb-0">{{ $i->clientesNovos }}</h3>
                                         <small class="text-muted">Total do Mês</small>
                                     </div>
                                 </div>
@@ -186,7 +160,7 @@ if(count($indicadores) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-sync sector-icon"></i>
                                         <h6 class="card-title">Renovações</h6>
-                                        <h3 class="mb-0"><?php echo $i->renovacoes; ?></h3>
+                                        <h3 class="mb-0">{{ $i->renovacoes }}</h3>
                                         <small class="text-muted">Total do Mês</small>
                                     </div>
                                 </div>
@@ -198,13 +172,15 @@ if(count($indicadores) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-dollar-sign sector-icon"></i>
                                         <h6 class="card-title">Valor Total</h6>
-                                        <h3 class="mb-0"><?php echo $i->valorTotal; ?></h3>
+                                        <h3 class="mb-0">{{ $i->valorTotal }}</h3>
                                         <small class="text-muted">Total do Mês</small>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <?php  endforeach;}  ?>
+                        @endforeach
+                        @endif
+
                         <!-- Tabela de Histórico -->
                         <div class="table-responsive mt-4">
                             <table class="table">
@@ -216,25 +192,25 @@ if(count($indicadores) > 1){
                                         <th class="text-center">Clientes Novos</th>
                                         <th class="text-center">Renovações</th>
                                         <th class="text-center">Valor Total</th>
-                                        @if($setor == 'admin')
+                                        @if(Session::get('setor') == 'admin')
                                         <th class="text-center">Ação</th>
                                         @endif
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach($indicadores as $i):?>
+                                    @foreach($indicadores as $i)
                                     <tr>
                                     <td class="text-center">{{ \Carbon\Carbon::parse($i->competencia)->translatedFormat('F \d\e Y') }}</td>
-                                    <td class="text-center"><?php echo $i->propostasEnviadas; ?></td>
-                                    <td class="text-center"><?php echo $i->propostasFechadas; ?></td>
-                                    <td class="text-center"><?php echo $i->clientesNovos; ?></td>
-                                    <td class="text-center"><?php echo $i->renovacoes; ?></td>
-                                    <td class="text-center"><?php echo $i->valorTotal; ?></td>
-                                    @if($setor == 'admin')
-                                    <td class="text-center"><a href="{{ route('comercial.deletar', ['id'=>$i->id]) }}" class = "btn btn-outline-danger" onclick="return confirm('Tem certeza que deseja excluir esse indicador?')">deletar</a></td>
+                                    <td class="text-center">{{ $i->propostasEnviadas }}</td>
+                                    <td class="text-center">{{ $i->propostasFechadas }}</td>
+                                    <td class="text-center">{{ $i->clientesNovos }}</td>
+                                    <td class="text-center">{{ $i->renovacoes }}</td>
+                                    <td class="text-center">{{ $i->valorTotal }}</td>
+                                    @if(Session::get('setor') == 'admin')
+                                    <td class="text-center"><a href="{{ route('comercial.deletar', ['id'=>$i->id]) }}" class="btn btn-outline-danger" onclick="return confirm('Tem certeza que deseja excluir esse indicador?')">deletar</a></td>
                                     @endif
                                     </tr>
-                                    <?php endforeach;?>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -259,4 +235,4 @@ if(count($indicadores) > 1){
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html> 
+</html>

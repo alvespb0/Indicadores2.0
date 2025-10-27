@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Ambiental;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Session;
 
 class ControllerAmbiental extends Controller
 {
@@ -52,6 +53,12 @@ class ControllerAmbiental extends Controller
      * @return Array
      */
     public function getAmbiental(Request $request){
+        // Verificação de autorização
+        $setor = Session::get('setor');
+        if($setor !== 'ambiental' && $setor !== 'admin'){
+            return redirect('/login');
+        }
+
         $query = Ambiental::query();
 
         if ($request->filled('competencia')) {
@@ -61,8 +68,18 @@ class ControllerAmbiental extends Controller
         }
 
         $indicadores = $query->orderBy('competencia', 'desc')->get();
+
+        // Calcular totais se houver mais de um indicador
+        $totalAmbiental = [];
+        if($indicadores->count() > 1){
+            $totalAmbiental = [
+                'orcamentosRealizados' => $indicadores->sum('orcamentosRealizados'),
+                'orcamentosAprovados' => $indicadores->sum('orcamentosAprovados'),
+                'clientesNovos' => $indicadores->sum('clientesNovos')
+            ];
+        }
         
-        return view('visualizar-ambiental', compact('indicadores'));
+        return view('visualizar-ambiental', compact('indicadores', 'totalAmbiental'));
     }
 
     /**

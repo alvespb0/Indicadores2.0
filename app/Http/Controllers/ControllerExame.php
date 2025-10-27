@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Exame;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Session;
 
 class ControllerExame extends Controller
 {
@@ -60,6 +61,12 @@ class ControllerExame extends Controller
      * se não, retorna todos os exames
      */
     public function getExames(Request $request){
+        // Verificação de autorização
+        $setor = Session::get('setor');
+        if($setor !== 'exames' && $setor !== 'admin'){
+            return redirect('/login');
+        }
+
         $query = Exame::query();
 
         if ($request->filled('competencia')) {
@@ -69,7 +76,24 @@ class ControllerExame extends Controller
         }
 
         $exames = $query->orderBy('competencia', 'desc')->get();
-        return view('visualizar-exames', compact('exames'));
+        
+        // Calcular totais se houver mais de um exame
+        $totalExames = [];
+        if($exames->count() > 1){
+            $totalExames = [
+                'clinicos' => $exames->sum('clinicos'),
+                'audiometrias' => $exames->sum('audiometrias'),
+                'laboratoriais' => $exames->sum('laboratoriais'),
+                'raiox' => $exames->sum('raiox'),
+                'eeg' => $exames->sum('eeg'),
+                'ecg' => $exames->sum('ecg'),
+                'espirometria' => $exames->sum('espirometria'),
+                'acuidade' => $exames->sum('acuidade'),
+                'outros_exames' => $exames->sum('outros_exames')
+            ];
+        }
+        
+        return view('visualizar-exames', compact('exames', 'totalExames'));
     }
 
     /**

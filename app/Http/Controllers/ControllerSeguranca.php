@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Seguranca;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Session;
 
 class ControllerSeguranca extends Controller
 {
@@ -55,6 +56,12 @@ class ControllerSeguranca extends Controller
      * @return Array
      */
     public function getSeguranca(Request $request){
+        // Verificação de autorização
+        $setor = Session::get('setor');
+        if($setor !== 'seguranca' && $setor !== 'admin'){
+            return redirect('/login');
+        }
+
         $query = Seguranca::query();
 
         if ($request->filled('competencia')) {
@@ -65,7 +72,18 @@ class ControllerSeguranca extends Controller
 
         $indicadores = $query->orderBy('competencia', 'desc')->get();
 
-        return view('visualizar-seguranca', compact('indicadores'));
+        // Calcular totais se houver mais de um indicador
+        $totalSeguranca = [];
+        if($indicadores->count() > 1){
+            $totalSeguranca = [
+                'levantamentosRealizados' => $indicadores->sum('levantamentoRealizados'),
+                'treinamentosRealizados' => $indicadores->sum('treinamentosRealizados'),
+                'laudosVendidos' => $indicadores->sum('laudosVendidos'),
+                'laudosEmitidos' => $indicadores->sum('laudosEmitidos')
+            ];
+        }
+
+        return view('visualizar-seguranca', compact('indicadores', 'totalSeguranca'));
     }
 
     /**

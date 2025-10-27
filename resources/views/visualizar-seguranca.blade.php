@@ -1,28 +1,3 @@
-<?php
-$setor = Session::get('setor');
-$usuario = Session::get('usuario');
-if($setor !== 'seguranca' && $setor !== 'admin'){
-    header("Location: http://{$_SERVER['HTTP_HOST']}/login");
-    exit;
-}
-$totalSeguranca = [];
-if(count($indicadores) > 1){
-    $totalSeguranca = [
-        'levantamentosRealizados' => 0,
-        'treinamentosRealizados' => 0,
-        'laudosVendidos' => 0,
-        'laudosEmitidos' => 0,
-    ];
-
-    foreach ($indicadores as $totalIndicadores) {
-        $totalSeguranca['levantamentosRealizados'] += (int) $totalIndicadores['levantamentoRealizados'];
-        $totalSeguranca['treinamentosRealizados'] += (int) $totalIndicadores['treinamentosRealizados'];
-        $totalSeguranca['laudosVendidos'] += (int) $totalIndicadores['laudosVendidos'];
-        $totalSeguranca['laudosEmitidos'] += (int) $totalIndicadores['laudosEmitidos'];
-    }
-}
-
-?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -66,7 +41,7 @@ if(count($indicadores) > 1){
                     <div class="card-body">
                         <h5 class="card-title mb-4">Indicadores do Setor de Segurança do Trabalho</h5>
                         <div class="col-sm-6">
-                            <form name = "filterForm" id="filterForm" action="/visualizar-seguranca" method="GET" class="d-flex justify-content">
+                            <form name="filterForm" id="filterForm" action="/visualizar-seguranca" method="GET" class="d-flex justify-content">
                                     <input type="month" name="competencia" class="form-control form-control-sm w-auto">
                                     <button type="submit" class="btn btn-primary">
                                         <i class="fas fa-calendar-alt"></i> Filtrar
@@ -74,11 +49,11 @@ if(count($indicadores) > 1){
                             </form>                            
                         </div>
                         
-                        <?php if(count($indicadores) < 1){
-                                echo "<center><h4> Nenhum indicador cadastrado nessa competência </h4></center>";
-                            }
-                            if(count($totalSeguranca) > 1){
-                        ?>
+                        @if($indicadores->count() < 1)
+                            <center><h4>Nenhum indicador cadastrado nessa competência</h4></center>
+                        @endif
+
+                        @if(count($totalSeguranca) > 1)
                         <div class="row g-4">
                             <!-- Card Levantamentos Realizados -->
                             <div class="col-md-4">
@@ -86,7 +61,7 @@ if(count($indicadores) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-clipboard-check sector-icon"></i>
                                         <h6 class="card-title">Levantamentos Realizados</h6>
-                                        <h3 class="mb-0"><?php echo $totalSeguranca['levantamentosRealizados']; ?></h3>
+                                        <h3 class="mb-0">{{ $totalSeguranca['levantamentosRealizados'] }}</h3>
                                         <small class="text-muted">Total do período</small>
                                     </div>
                                 </div>
@@ -98,7 +73,7 @@ if(count($indicadores) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-chalkboard-teacher sector-icon"></i>
                                         <h6 class="card-title">Treinamentos Realizados</h6>
-                                        <h3 class="mb-0"><?php echo $totalSeguranca['treinamentosRealizados']; ?></h3>
+                                        <h3 class="mb-0">{{ $totalSeguranca['treinamentosRealizados'] }}</h3>
                                         <small class="text-muted">Total do período</small>
                                     </div>
                                 </div>
@@ -110,7 +85,7 @@ if(count($indicadores) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-file-invoice sector-icon"></i>
                                         <h6 class="card-title">Laudos Vendidos</h6>
-                                        <h3 class="mb-0"><?php echo $totalSeguranca['laudosVendidos']; ?> </h3>
+                                        <h3 class="mb-0">{{ $totalSeguranca['laudosVendidos'] }}</h3>
                                         <small class="text-muted">Total do período</small>
                                     </div>
                                 </div>
@@ -122,14 +97,14 @@ if(count($indicadores) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-file-signature sector-icon"></i>
                                         <h6 class="card-title">Laudos Emitidos</h6>
-                                        <h3 class="mb-0"><?php echo $totalSeguranca['laudosEmitidos']; ?></h3>
+                                        <h3 class="mb-0">{{ $totalSeguranca['laudosEmitidos'] }}</h3>
                                         <small class="text-muted">Total do período</small>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <?php }else{
-                                foreach($indicadores as $i): ?>
+                        @else
+                            @foreach($indicadores as $i)
                         <div class="row g-4">
                             <!-- Card Levantamentos Realizados -->
                             <div class="col-md-4">
@@ -137,7 +112,7 @@ if(count($indicadores) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-clipboard-check sector-icon"></i>
                                         <h6 class="card-title">Levantamentos Realizados</h6>
-                                        <h3 class="mb-0"><?php echo $i->levantamentoRealizados; ?></h3>
+                                        <h3 class="mb-0">{{ $i->levantamentoRealizados }}</h3>
                                         <small class="text-muted">Total do período</small>
                                     </div>
                                 </div>
@@ -149,7 +124,7 @@ if(count($indicadores) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-chalkboard-teacher sector-icon"></i>
                                         <h6 class="card-title">Treinamentos Realizados</h6>
-                                        <h3 class="mb-0"><?php echo $i->treinamentosRealizados; ?></h3>
+                                        <h3 class="mb-0">{{ $i->treinamentosRealizados }}</h3>
                                         <small class="text-muted">Total do período</small>
                                     </div>
                                 </div>
@@ -161,7 +136,7 @@ if(count($indicadores) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-file-invoice sector-icon"></i>
                                         <h6 class="card-title">Laudos Vendidos</h6>
-                                        <h3 class="mb-0"><?php echo $i->laudosVendidos; ?> </h3>
+                                        <h3 class="mb-0">{{ $i->laudosVendidos }}</h3>
                                         <small class="text-muted">Total do período</small>
                                     </div>
                                 </div>
@@ -173,14 +148,15 @@ if(count($indicadores) > 1){
                                     <div class="card-body text-center">
                                         <i class="fas fa-file-signature sector-icon"></i>
                                         <h6 class="card-title">Laudos Emitidos</h6>
-                                        <h3 class="mb-0"><?php echo $i->laudosEmitidos ?></h3>
+                                        <h3 class="mb-0">{{ $i->laudosEmitidos }}</h3>
                                         <small class="text-muted">Total do período</small>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        @endforeach
+                        @endif
 
-                        <?php endforeach;} ?>
                         <!-- Tabela de Histórico -->
                         <div class="table-responsive mt-4">
                             <table class="table">
@@ -191,24 +167,24 @@ if(count($indicadores) > 1){
                                         <th class="text-center">Treinamentos Realizados</th>
                                         <th class="text-center">Laudos Vendidos</th>
                                         <th class="text-center">Laudos Emitidos</th>
-                                        @if($setor == 'admin')
+                                        @if(Session::get('setor') == 'admin')
                                         <th class="text-center">Ação</th>
                                         @endif
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach($indicadores as $i):?>
+                                    @foreach($indicadores as $i)
                                     <tr>
                                         <td class="text-center">{{ \Carbon\Carbon::parse($i->competencia)->translatedFormat('F \d\e Y') }}</td>
-                                        <td class="text-center"><?php echo $i->levantamentoRealizados ?></td>
-                                        <td class="text-center"><?php echo $i->treinamentosRealizados ?></td>
-                                        <td class="text-center"><?php echo $i->laudosVendidos ?></td>
-                                        <td class="text-center"><?php echo $i->laudosEmitidos ?></td>
-                                        @if($setor == 'admin')
-                                        <td class="text-center"><a href="{{ route('seguranca.deletar', ['id'=>$i->id]) }}" class = "btn btn-outline-danger" onclick="return confirm('Tem certeza que deseja excluir esse indicador?')">deletar</a></td>
+                                        <td class="text-center">{{ $i->levantamentoRealizados }}</td>
+                                        <td class="text-center">{{ $i->treinamentosRealizados }}</td>
+                                        <td class="text-center">{{ $i->laudosVendidos }}</td>
+                                        <td class="text-center">{{ $i->laudosEmitidos }}</td>
+                                        @if(Session::get('setor') == 'admin')
+                                        <td class="text-center"><a href="{{ route('seguranca.deletar', ['id'=>$i->id]) }}" class="btn btn-outline-danger" onclick="return confirm('Tem certeza que deseja excluir esse indicador?')">deletar</a></td>
                                         @endif
                                     </tr>
-                                    <?php endforeach; ?>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -233,4 +209,4 @@ if(count($indicadores) > 1){
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html> 
+</html>

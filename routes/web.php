@@ -6,6 +6,7 @@ use App\Http\Controllers\ControllerComercial;
 use App\Http\Controllers\ControllerUsuario;
 use App\Http\Controllers\ControllerSeguranca;
 use App\Http\Controllers\ControllerAmbiental;
+use App\Services\ContaAzulService;
 
 /* ROUTE PARA A INDEX */
 Route::get('/', function (){return view('index');});
@@ -76,4 +77,8 @@ Route::get('/visualizar-ambiental', [ControllerAmbiental::class, 'getAmbiental']
 Route::post('/ambiental/cadastrar', [ControllerAmbiental::class, 'cadastrarIndicador'])->name('ambiental.cadastrar');
 
 Route::get('/visualizar-ambiental/deletar/{id}', [ControllerAmbiental::class, 'deletarIndicador'])->name('ambiental.deletar');
+
+Route::get('/ca/connect', [ContaAzulService::class, 'getAuthorizationToken']);
+Route::get('/ca/saveToken', [ContaAzulService::class, 'saveOrRefreshToken']);
+
 ?>

@@ -3,7 +3,9 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
+
 use App\Models\CA_Tokens;
+use App\Models\Contas_Receber;
 use Carbon\Carbon;
 
 class ContaAzulService
@@ -171,6 +173,51 @@ class ContaAzulService
             }else {
                 \Log::error('Erro ao conectar com o conta azul', ['status' => $response->status(), 'body' => $response->body()]);
             }
+        }
+    }
+
+    public function getContasReceberDia($access_token){
+        try{
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer '. $access_token
+            ])->get('https://api-v2.contaazul.com/v1/financeiro/eventos-financeiros/contas-a-receber/buscar',[
+                'pagina' => 1,
+                'tamanho_pagina' => 100, 
+                'data_vencimento_de' => Carbon::yesterday()->toDateString(),
+                'data_vencimento_ate' => Carbon::yesterday()->toDateString(),
+                'status' => 'RECEBIDO'
+            ]);
+            
+            if($response->status() == 200){
+                $data = $response->json();
+                if(empty($data['itens'])){
+                    \Log::info('nenhum registro de contas a receber encontrado para data ' . Carbon::yesterday()->toDateString());
+                    return false;
+                }else{
+                    foreach($data['itens'] as $d){
+                        Contas_Receber::create([
+                            'uuid' => $d['id'],
+                            'descricao' => $d['descricao'],
+                            'data_vencimento' => $d['data_vencimento'],
+                            'status' => $d['status_traduzido'],
+                            'valor' => $d['pago'],
+                            'cliente_uuid' => $d['cliente']['id'],
+                            'cliente_nome' => $d['cliente']['nome'],
+                            'data_competencia' => Carbon::yesterday()->toDateString()
+                        ]);
+                    }
+                    return true;
+                }
+            }else{
+                \Log::error('Erro ao buscar contas a receber: ' . $response->body());
+                return null;
+            }
+        }catch(\Exception $e){
+            session()->flash('error', 'Erro ao acessar a API para resgatar o CONTAS A RECEBER do CA');
+            \Log::error('Erro ao acessar a API para resgatar o CONTAS A RECEBER no Conta Azul:', [
+                'error' => $e->getMessage(),
+            ]);
+            return null;
         }
     }
 }

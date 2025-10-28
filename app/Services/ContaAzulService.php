@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Cache;
 
 use App\Models\CA_Tokens;
 use App\Models\Contas_Receber;
+use App\Models\Contas_Pagar;
 use Carbon\Carbon;
 
 class ContaAzulService
@@ -176,7 +177,41 @@ class ContaAzulService
         }
     }
 
-    public function getContasReceberDia($access_token){
+    public function lancarFinanceiro(){
+        $token = CA_Tokens::first();
+
+        if(!$token || $token->expires_at < now()){
+            $this->saveOrRefreshToken();
+            $token->refresh();
+        }
+
+        try{
+            \Log::info('Preparando para lançar os números financeiros para data ' . Carbon::yesterday()->toDateString());
+            $receber = $this->getContasReceberDia($token);
+            $inadimplentes = $this->getInadimplentesDiario($token);
+            $pagar = $this->getContasPagarDia($token);
+
+            if(!$receber){
+                \Log::error('Erro ao lançar os dados de contas a receber do dia '. Carbon::yesterday()->toDateString());
+            }
+
+            if(!$inadimplentes){
+                \Log::error('Erro ao lançar os dados de inadimplentes do dia '. Carbon::yesterday()->toDateString());
+            }
+
+            if(!$pagar){
+                \Log::error('Erro ao lançar os dados de contas a pagar do dia '. Carbon::yesterday()->toDateString());
+            }
+
+        }catch(\Exception $e){
+            session()->flash('error', 'Erro ao lançar os dados financeiros do dia');
+            \Log::error('Erro ao lançar os dados financeiros do dia:', [
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+    
+    private function getContasReceberDia($access_token){
         try{
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer '. $access_token
@@ -221,7 +256,7 @@ class ContaAzulService
         }
     }
 
-    public function getInadimplentesDiario($access_token){
+    private function getInadimplentesDiario($access_token){
         try{
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer '. $access_token
@@ -265,8 +300,53 @@ class ContaAzulService
             ]);
             return null;
         }
-
     }
+
+    private function getContasPagarDia($access_token){
+        try{
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer '. $access_token
+            ])->get('https://api-v2.contaazul.com/v1/financeiro/eventos-financeiros/contas-a-pagar/buscar',[
+                'pagina' => 1,
+                'tamanho_pagina' => 100, 
+                'data_vencimento_de' => Carbon::yesterday()->toDateString(),
+                'data_vencimento_ate' => Carbon::yesterday()->toDateString(),
+                'status' => 'RECEBIDO'
+            ]);
+            
+            if($response->status() == 200){
+                $data = $response->json();
+                if(empty($data['itens'])){
+                    \Log::info('nenhum registro de contas a pagar encontrado para data ' . Carbon::yesterday()->toDateString());
+                    return false;
+                }else{
+                    foreach($data['itens'] as $d){
+                        Contas_Pagar::create([
+                            'uuid' => $d['id'],
+                            'descricao' => $d['descricao'],
+                            'data_vencimento' => $d['data_vencimento'],
+                            'status' => $d['status_traduzido'],
+                            'valor' => $d['pago'],
+                            'fornecedor_uuid' => $d['fornecedor']['id'],
+                            'fornecedor_nome' => $d['fornecedor']['nome'],
+                            'data_competencia' => Carbon::yesterday()->toDateString()
+                        ]);
+                    }
+                    return true;
+                }
+            }else{
+                \Log::error('Erro ao buscar contas a pagar: ' . $response->body());
+                return null;
+            }
+        }catch(\Exception $e){
+            session()->flash('error', 'Erro ao acessar a API para resgatar o CONTAS A PAGAR do CA');
+            \Log::error('Erro ao acessar a API para resgatar o CONTAS A PAGAR no Conta Azul:', [
+                'error' => $e->getMessage(),
+            ]);
+            return null;
+        }
+
+    }    
 }
 
 ?>

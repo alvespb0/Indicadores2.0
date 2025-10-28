@@ -6,10 +6,20 @@ use App\Http\Controllers\ControllerComercial;
 use App\Http\Controllers\ControllerUsuario;
 use App\Http\Controllers\ControllerSeguranca;
 use App\Http\Controllers\ControllerAmbiental;
+use App\Http\Controllers\ControllerFinanceiro;
 use App\Services\ContaAzulService;
 
 /* ROUTE PARA A INDEX */
-Route::get('/', function (){return view('index');});
+Route::get('/', function (){
+    $usuario = Session::get('usuario');
+    $setor = Session::get('setor');
+    
+    if(empty($usuario) || empty($setor)){
+        return redirect('/login');
+    }
+    
+    return view('index', compact('usuario', 'setor'));
+});
 
 Route::get('/graphs', function (){return view('visualizar-indicadores');});
 
@@ -78,7 +88,18 @@ Route::post('/ambiental/cadastrar', [ControllerAmbiental::class, 'cadastrarIndic
 
 Route::get('/visualizar-ambiental/deletar/{id}', [ControllerAmbiental::class, 'deletarIndicador'])->name('ambiental.deletar');
 
-Route::get('/ca/connect', [ContaAzulService::class, 'getAuthorizationToken']);
+#Route::get('/ca/connect', [ContaAzulService::class, 'getAuthorizationToken']);
+
 Route::get('/ca/saveToken', [ContaAzulService::class, 'saveOrRefreshToken']);
+
+/* ***************************************************************************************************** */
+
+/* ROUTE PARA AS TELAS DO FINANCEIRO */
+
+Route::get('/visualizar-contasReceber', [ControllerFinanceiro::class, 'getContasReceber']);
+
+Route::get('/visualizar-inadimplentes', [ControllerFinanceiro::class, 'getInadimplentes']);
+
+Route::get('/visualizar-contasPagar', [ControllerFinanceiro::class, 'getContasPagar']);
 
 ?>

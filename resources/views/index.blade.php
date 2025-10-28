@@ -1,11 +1,3 @@
-<?php
-$usuario = Session::get('usuario');
-$setor = Session::get('setor');
-if(empty($usuario) || empty($setor)){
-    header("Location: http://{$_SERVER['HTTP_HOST']}/login");
-    exit;
-}
-?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -28,7 +20,7 @@ if(empty($usuario) || empty($setor)){
                 <i class="fas fa-chart-line me-2"></i>Sistema de Indicadores
             </a>
             <ul class="navbar-nav ms-auto">
-                <?php if($setor == 'admin'){?>
+                @if($setor == 'admin')
                     <li class="nav-item">
                         <a class="nav-link" href="/visualizar-usuarios">
                             <i class="fa-solid fa-circle-user"></i> &nbsp Visualizar Usuarios
@@ -39,7 +31,7 @@ if(empty($usuario) || empty($setor)){
                             <i class="fa-solid fa-circle-user"></i> &nbsp Cadastrar Usuarios
                         </a>
                     </li>
-                <?php } ?>
+                @endif
                     <li class="nav-item">
                         <a class="nav-link" href="/logout">
                             <i class="fas fa-sign-out-alt me-1"></i> &nbsp Sair
@@ -62,7 +54,7 @@ if(empty($usuario) || empty($setor)){
 
             <div class="row g-4 justify-content-center">
                 <!-- Card Exames -->
-                <?php if($setor == 'admin' || $setor == 'exames'):?> 
+                @if($setor == 'admin' || $setor == 'exames')
                 <div class="col-md-6 col-lg-3">
                     <div class="card h-100">
                         <div class="card-body text-center">
@@ -80,10 +72,10 @@ if(empty($usuario) || empty($setor)){
                         </div>
                     </div>
                 </div>
-                <?php endif;?>
+                @endif
 
                 <!-- Card Comercial -->
-                <?php if($setor == 'admin' || $setor == 'comercial'):?> 
+                @if($setor == 'admin' || $setor == 'comercial')
                 <div class="col-md-6 col-lg-3">
                     <div class="card h-100">
                         <div class="card-body text-center">
@@ -101,10 +93,10 @@ if(empty($usuario) || empty($setor)){
                         </div>
                     </div>
                 </div>
-                <?php endif; ?>
+                @endif
 
                 <!-- Card Segurança do Trabalho -->
-                <?php if($setor == 'admin' || $setor == 'seguranca'):?> 
+                @if($setor == 'admin' || $setor == 'seguranca')
                 <div class="col-md-6 col-lg-3">
                     <div class="card h-100">
                         <div class="card-body text-center">
@@ -122,10 +114,10 @@ if(empty($usuario) || empty($setor)){
                         </div>
                     </div>
                 </div>
-                <?php endif; ?>
+                @endif
 
                 <!-- Card Ambiental -->
-                <?php if($setor == 'admin' || $setor == 'ambiental'):?> 
+                @if($setor == 'admin' || $setor == 'ambiental')
                 <div class="col-md-6 col-lg-3">
                     <div class="card h-100">
                         <div class="card-body text-center">
@@ -143,7 +135,31 @@ if(empty($usuario) || empty($setor)){
                         </div>
                     </div>
                 </div>
-                <?php endif; ?> 
+                @endif
+
+                <!-- Card Financeiro -->
+                @if($setor == 'admin' || $setor == 'financeiro')
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-dollar-sign sector-icon"></i>
+                            <h5 class="card-title">Financeiro</h5>
+                            <p class="card-text">Gestão financeira e controle de contas</p>
+                            <div class="d-grid gap-2">
+                                <a href="/visualizar-contasPagar" class="btn btn-primary">
+                                    <i class="fas fa-money-bill-wave me-2"></i>Visualizar Contas a Pagar
+                                </a>
+                                <a href="/visualizar-contasReceber" class="btn btn-secondary">
+                                    <i class="fas fa-hand-holding-usd me-2"></i>Visualizar Contas a Receber
+                                </a>
+                                <a href="/visualizar-inadimplentes" class="btn btn-primary">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>Visualizar Inadimplentes
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endif
             </div>
         </div>
     </main>
@@ -163,4 +179,4 @@ if(empty($usuario) || empty($setor)){
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html> 
+</html>

@@ -187,9 +187,9 @@ class ContaAzulService
 
         try{
             \Log::info('Preparando para lançar os números financeiros para data ' . Carbon::yesterday()->toDateString());
-            $receber = $this->getContasReceberDia($token);
-            $inadimplentes = $this->getInadimplentesDiario($token);
-            $pagar = $this->getContasPagarDia($token);
+            $receber = $this->getContasReceberDia($token->access_token);
+            $inadimplentes = $this->getInadimplentesDiario($token->access_token);
+            $pagar = $this->getContasPagarDia($token->access_token);
 
             if(!$receber){
                 \Log::error('Erro ao lançar os dados de contas a receber do dia '. Carbon::yesterday()->toDateString());

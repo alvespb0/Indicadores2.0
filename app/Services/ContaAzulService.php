@@ -190,6 +190,7 @@ class ContaAzulService
             $receber = $this->getContasReceberDia($token->access_token);
             $inadimplentes = $this->getInadimplentesDiario($token->access_token);
             $pagar = $this->getContasPagarDia($token->access_token);
+            $pagarAberto = $this->getContasPagarAtrasados($token->acess_token);
 
             if(!$receber){
                 \Log::error('Erro ao lançar os dados de contas a receber do dia '. Carbon::yesterday()->toDateString());
@@ -203,6 +204,12 @@ class ContaAzulService
                 \Log::error('Erro ao lançar os dados de contas a pagar do dia '. Carbon::yesterday()->toDateString());
             }
 
+            if(!$pagarAberto){
+                \Log::error('Erro ao lançar os dados de contas a pagar do dia '. Carbon::yesterday()->toDateString());
+            }
+
+            \Log::info('Finalizado Lançar financeiro');
+            
         }catch(\Exception $e){
             session()->flash('error', 'Erro ao lançar os dados financeiros do dia');
             \Log::error('Erro ao lançar os dados financeiros do dia:', [
@@ -263,7 +270,7 @@ class ContaAzulService
             ])->get('https://api-v2.contaazul.com/v1/financeiro/eventos-financeiros/contas-a-receber/buscar',[
                 'pagina' => 1,
                 'tamanho_pagina' => 500, 
-                'data_vencimento_de' => '2025-10-01', # TESTE na API vamos voltar daqui 3 meses ou 4 e ver se não está passando do tamanho da pagina 500
+                'data_vencimento_de' => Carbon::now()->subMonths(3)->toDateString(), # TESTE na API vamos voltar daqui 3 meses ou 4 e ver se não está passando do tamanho da pagina 500
                 'data_vencimento_ate' => Carbon::yesterday()->toDateString(),
                 'status' => 'ATRASADO'
             ]);
@@ -354,7 +361,7 @@ class ContaAzulService
             ])->get('https://api-v2.contaazul.com/v1/financeiro/eventos-financeiros/contas-a-pagar/buscar',[
                 'pagina' => 1,
                 'tamanho_pagina' => 500, 
-                'data_vencimento_de' => '2025-10-01', # TESTE na API vamos voltar daqui 3 meses ou 4 e ver se não está passando do tamanho da pagina 500
+                'data_vencimento_de' => Carbon::now()->subMonths(3)->toDateString(), # TESTE na API vamos voltar daqui 3 meses ou 4 e ver se não está passando do tamanho da pagina 500
                 'data_vencimento_ate' => Carbon::yesterday()->toDateString(),
                 'status' => 'ATRASADO'
             ]);

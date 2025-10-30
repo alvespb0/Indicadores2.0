@@ -190,7 +190,7 @@ class ContaAzulService
             $receber = $this->getContasReceberDia($token->access_token);
             $inadimplentes = $this->getInadimplentesDiario($token->access_token);
             $pagar = $this->getContasPagarDia($token->access_token);
-            $pagarAberto = $this->getContasPagarAtrasados($token->acess_token);
+            $pagarAberto = $this->getContasPagarAtrasados($token->access_token);
 
             if(!$receber){
                 \Log::error('Erro ao lançar os dados de contas a receber do dia '. Carbon::yesterday()->toDateString());
@@ -224,8 +224,8 @@ class ContaAzulService
                 'Authorization' => 'Bearer '. $access_token
             ])->get('https://api-v2.contaazul.com/v1/financeiro/eventos-financeiros/contas-a-receber/buscar',[
                 'pagina' => 1,
-                'tamanho_pagina' => 100, 
-                'data_vencimento_de' => Carbon::yesterday()->toDateString(),
+                'tamanho_pagina' => 500, 
+                'data_vencimento_de' => Carbon::now()->subMonth()->toDateString(),
                 'data_vencimento_ate' => Carbon::yesterday()->toDateString(),
                 'status' => 'RECEBIDO'
             ]);
@@ -237,16 +237,18 @@ class ContaAzulService
                     return false;
                 }else{
                     foreach($data['itens'] as $d){
-                        Contas_Receber::create([
-                            'uuid' => $d['id'],
-                            'descricao' => $d['descricao'],
-                            'data_vencimento' => $d['data_vencimento'],
-                            'status' => $d['status_traduzido'],
-                            'valor' => $d['pago'],
-                            'cliente_uuid' => $d['cliente']['id'],
-                            'cliente_nome' => $d['cliente']['nome'],
-                            'data_competencia' => Carbon::yesterday()->toDateString()
-                        ]);
+                        Contas_Receber::updateOrCreate(
+                            ['uuid' => $d['id']],
+                            [
+                                'descricao' => $d['descricao'],
+                                'data_vencimento' => $d['data_vencimento'],
+                                'status' => $d['status_traduzido'],
+                                'valor' => $d['pago'],
+                                'cliente_uuid' => $d['cliente']['id'],
+                                'cliente_nome' => $d['cliente']['nome'],
+                                'data_competencia' => Carbon::yesterday()->toDateString()
+                            ]
+                        );
                     }
                     return true;
                 }
@@ -315,8 +317,8 @@ class ContaAzulService
                 'Authorization' => 'Bearer '. $access_token
             ])->get('https://api-v2.contaazul.com/v1/financeiro/eventos-financeiros/contas-a-pagar/buscar',[
                 'pagina' => 1,
-                'tamanho_pagina' => 100, 
-                'data_vencimento_de' => Carbon::yesterday()->toDateString(),
+                'tamanho_pagina' => 500, 
+                'data_vencimento_de' => Carbon::now()->subMonth()->toDateString(),
                 'data_vencimento_ate' => Carbon::yesterday()->toDateString(),
                 'status' => 'RECEBIDO'
             ]);
@@ -328,16 +330,18 @@ class ContaAzulService
                     return false;
                 }else{
                     foreach($data['itens'] as $d){
-                        Contas_Pagar::create([
-                            'uuid' => $d['id'],
-                            'descricao' => $d['descricao'],
-                            'data_vencimento' => $d['data_vencimento'],
-                            'status' => $d['status_traduzido'],
-                            'valor' => $d['pago'],
-                            'fornecedor_uuid' => $d['fornecedor']['id'],
-                            'fornecedor_nome' => $d['fornecedor']['nome'],
-                            'data_competencia' => Carbon::yesterday()->toDateString()
-                        ]);
+                        Contas_Pagar::updateOrCreate(
+                            ['uuid' => $d['id']],
+                            [
+                                'descricao' => $d['descricao'],
+                                'data_vencimento' => $d['data_vencimento'],
+                                'status' => $d['status_traduzido'],
+                                'valor' => $d['pago'],
+                                'fornecedor_uuid' => $d['fornecedor']['id'],
+                                'fornecedor_nome' => $d['fornecedor']['nome'],
+                                'data_competencia' => Carbon::yesterday()->toDateString()
+                            ]
+                        );
                     }
                     return true;
                 }

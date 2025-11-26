@@ -192,6 +192,13 @@ class ContaAzulService
             $pagar = $this->getContasPagarDia($token->access_token);
             $pagarAberto = $this->getContasPagarAtrasados($token->access_token);
 
+            \Log::info('Resumo financeiro diário', [
+                'receber' => $receber,
+                'inadimplentes' => $inadimplentes,
+                'pagar' => $pagar,
+                'abertos' => $pagarAberto
+            ]);
+            
             if(!$receber){
                 \Log::error('Erro ao lançar os dados de contas a receber do dia '. Carbon::yesterday()->toDateString());
             }
@@ -383,7 +390,7 @@ class ContaAzulService
                             'descricao' => $d['descricao'],
                             'data_vencimento' => $d['data_vencimento'],
                             'status' => $d['status_traduzido'],
-                            'valor' => $d['pago'],
+                            'valor' => $d['nao_pago'],
                             'fornecedor_uuid' => $d['fornecedor']['id'],
                             'fornecedor_nome' => $d['fornecedor']['nome'],
                             'data_competencia' => Carbon::yesterday()->toDateString()

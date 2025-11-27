@@ -227,6 +227,42 @@ class ContaAzulService
         }
     }
     
+    public function lancarProjecoes(){
+        $token = CA_Tokens::first();
+
+        if(!$token || $token->expires_at < now()){
+            $this->saveOrRefreshToken();
+            $token->refresh();
+        }
+
+        try{
+            \Log::info('Preparando para lançar os números financeiros para data ' . Carbon::now()->toDateString(). ' até '. Carbon::now()->addDays(365)->toDateString());
+            $projecaoReceber = $this->getProjecaoContasReceber($token->access_token);
+            $projecaoPagar = $this->getProjecaoContasPagar($token->access_token);
+
+            \Log::info('Resumo financeiro diário', [
+                'projeção receber' => $projecaoReceber,
+                'projeção pagar' => $projecaoPagar,
+            ]);
+            
+            if(!$projecaoReceber){
+                \Log::error('Erro ao lançar os dados de contas a receber do dia '. Carbon::yesterday()->toDateString());
+            }
+
+            if(!$projecaoPagar){
+                \Log::error('Erro ao lançar os dados de contas a pagar do dia '. Carbon::yesterday()->toDateString());
+            }
+
+            \Log::info('Finalizado lançamnento de projeções financeiras');
+            
+        }catch(\Exception $e){
+            session()->flash('error', 'Erro ao lançar as projeções financeiras do dia');
+            \Log::error('Erro ao lançar os as projeções financeiras do dia:', [
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
     private function getContasReceberDia($access_token){
         try{
             $response = Http::withHeaders([
@@ -413,7 +449,7 @@ class ContaAzulService
         }
     }
 
-    public function getProjecaoContasPagar($access_token){
+    private function getProjecaoContasPagar($access_token){
         try{
             $pagina = 1;
             $data = [];
@@ -475,7 +511,7 @@ class ContaAzulService
         }
     }
 
-    public function getProjecaoContasReceber($access_token){
+    private function getProjecaoContasReceber($access_token){
         try{
             $pagina = 1;
             $data = [];

@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Cache;
 use App\Models\CA_Tokens;
 use App\Models\Contas_Receber;
 use App\Models\Contas_Pagar;
+use App\Models\Projecao_Contas_Pagar;
+use App\Models\projecao_contas_receber;
 use Carbon\Carbon;
 
 class ContaAzulService
@@ -411,7 +413,129 @@ class ContaAzulService
         }
     }
 
+    public function getProjecaoContasPagar($access_token){
+        try{
+            $pagina = 1;
+            $data = [];
 
+            do{
+                $response = Http::withHeaders([
+                    'Authorization' => 'Bearer '. $access_token
+                ])->get('https://api-v2.contaazul.com/v1/financeiro/eventos-financeiros/contas-a-pagar/buscar',[
+                    'pagina' => $pagina,
+                    'tamanho_pagina' => 100, 
+                    'data_vencimento_de' => Carbon::now()->toDateString(),
+                    'data_vencimento_ate' => Carbon::now()->addDays(365)->toDateString(),
+                ]);
+
+                if($response->failed()){
+                    // rate-limit (429) 10 por segundo
+                    if ($response->status() == 429) {
+                        sleep(2);
+                        continue;
+                    }
+                    \Log::error('Erro ao acessar a API para resgatar a PROJEÇÃO CONTAS A PAGAR no Conta Azul:', [
+                        'error' => $response->body(),
+                    ]);
+                    return null;
+                }
+
+                $data = $response->json();
+
+                if(empty($data['itens'])){
+                    break; # não precisa logar, ele vai retornar null quando o loop acabar de qualquer forma
+                }
+
+                foreach($data['itens'] as $d){
+                    Projecao_Contas_Pagar::updateOrCreate(
+                        ['uuid' => $d['id']],
+                        [
+                            'descricao' => $d['descricao'],
+                            'data_vencimento' => $d['data_vencimento'],
+                            'status' => $d['status_traduzido'],
+                            'valor' => $d['total'],
+                            'fornecedor_uuid' => $d['fornecedor']['id'],
+                            'fornecedor_nome' => $d['fornecedor']['nome'],
+                            'data_competencia' => $d['data_vencimento']
+                        ]
+                    );
+                }
+                $pagina++;
+                
+                usleep(150 * 1000); // delay para rate limit
+            }while(!empty($data['itens']));
+            
+            return true;
+
+        }catch(\Exception $e){
+            \Log::error('Erro ao acessar a API para resgatar a PROJEÇÃO CONTAS A PAGAR no Conta Azul:', [
+                'error' => $e->getMessage(),
+            ]);
+            return null;
+        }
+    }
+
+    public function getProjecaoContasReceber($access_token){
+        try{
+            $pagina = 1;
+            $data = [];
+
+            do{
+                $response = Http::withHeaders([
+                    'Authorization' => 'Bearer '. $access_token
+                ])->get('https://api-v2.contaazul.com/v1/financeiro/eventos-financeiros/contas-a-receber/buscar',[
+                    'pagina' => $pagina,
+                    'tamanho_pagina' => 100, 
+                    'data_vencimento_de' => Carbon::now()->toDateString(),
+                    'data_vencimento_ate' => Carbon::now()->addDays(365)->toDateString(),
+                ]);
+                if($response->failed()){
+                    // rate-limit (429) 10 por segundo
+                    if ($response->status() == 429) {
+                        sleep(2);
+                        continue;
+                    }
+                    \Log::error('Erro ao acessar a API para resgatar a PROJEÇÃO CONTAS A RECEBER no Conta Azul:', [
+                        'error' => $response->body(),
+                    ]);
+                    return null;
+                }
+
+                $data = $response->json();
+
+                if(empty($data['itens'])){
+                    break; # não precisa logar, ele vai retornar null quando o loop acabar de qualquer forma
+                }
+
+                foreach($data['itens'] as $d){
+                    Projecao_Contas_Receber::updateOrCreate(
+                        ['uuid' => $d['id']],
+                        [
+                            'descricao' => $d['descricao'],
+                            'data_vencimento' => $d['data_vencimento'],
+                            'status' => $d['status_traduzido'],
+                            'valor' => $d['total'],
+                            'cliente_uuid' => $d['cliente']['id'],
+                            'cliente_nome' => $d['cliente']['nome'],
+                            'data_competencia' => Carbon::yesterday()->toDateString()
+                        ]
+                    );
+                }
+                $pagina++;
+                
+                usleep(150 * 1000); // delay para rate limit
+            }while(!empty($data['itens']));
+            
+            return true;
+
+        }catch(\Exception $e){
+            \Log::error('Erro ao acessar a API para resgatar a PROJEÇÃO CONTAS A RECEBER no Conta Azul:', [
+                'error' => $e->getMessage(),
+            ]);
+            return null;
+        }
+
+    }
 }
 
 ?>

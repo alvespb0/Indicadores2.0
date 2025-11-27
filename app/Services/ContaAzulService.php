@@ -8,7 +8,7 @@ use App\Models\CA_Tokens;
 use App\Models\Contas_Receber;
 use App\Models\Contas_Pagar;
 use App\Models\Projecao_Contas_Pagar;
-use App\Models\projecao_contas_receber;
+use App\Models\Projecao_Contas_Receber;
 use Carbon\Carbon;
 
 class ContaAzulService

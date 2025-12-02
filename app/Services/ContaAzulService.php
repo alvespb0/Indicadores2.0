@@ -265,44 +265,60 @@ class ContaAzulService
 
     private function getContasReceberDia($access_token){
         try{
-            $response = Http::withHeaders([
-                'Authorization' => 'Bearer '. $access_token
-            ])->get('https://api-v2.contaazul.com/v1/financeiro/eventos-financeiros/contas-a-receber/buscar',[
-                'pagina' => 1,
-                'tamanho_pagina' => 500, 
-                'data_vencimento_de' => Carbon::now()->subMonth()->toDateString(),
-                'data_vencimento_ate' => Carbon::yesterday()->toDateString(),
-                'status' => 'RECEBIDO'
-            ]);
-            
-            if($response->status() == 200){
-                $data = $response->json();
-                if(empty($data['itens'])){
-                    \Log::info('nenhum registro de contas a receber encontrado para data ' . Carbon::yesterday()->toDateString());
-                    return false;
-                }else{
-                    foreach($data['itens'] as $d){
-                        Contas_Receber::updateOrCreate(
-                            ['uuid' => $d['id']],
-                            [
-                                'descricao' => $d['descricao'],
-                                'data_vencimento' => $d['data_vencimento'],
-                                'status' => $d['status_traduzido'],
-                                'valor' => $d['pago'],
-                                'cliente_uuid' => $d['cliente']['id'],
-                                'cliente_nome' => $d['cliente']['nome'],
-                                'data_competencia' => Carbon::yesterday()->toDateString()
-                            ]
-                        );
+            $pagina = 1;
+            $data = [];
+
+            do{
+                $response = Http::withHeaders([
+                    'Authorization' => 'Bearer '. $access_token
+                ])->get('https://api-v2.contaazul.com/v1/financeiro/eventos-financeiros/contas-a-receber/buscar',[
+                    'pagina' => $pagina,
+                    'tamanho_pagina' => 500, 
+                    'data_vencimento_de' => Carbon::now()->subYear()->toDateString(),
+                    'data_vencimento_ate' => Carbon::yesterday()->toDateString(),
+                    'status' => 'RECEBIDO'
+                ]);
+                
+                if($response->failed()){
+                    if ($response->status() == 429) {
+                        sleep(2);
+                        continue;
                     }
-                    return true;
+                    \Log::error('Erro ao acessar a API para resgatar o CONTAS A RECEBER no Conta Azul:', [
+                        'error' => $response->body(),
+                    ]);
+
+                    return null;
                 }
-            }else{
-                \Log::error('Erro ao buscar contas a receber: ' . $response->body());
-                return null;
-            }
+                
+                $data = $response->json();
+
+                if(empty($data['itens'])){
+                    \Log::info('nenhum registro de contas a receber encontrado para o processamento da data ' . Carbon::yesterday()->toDateString());
+                    break;
+                }
+                foreach($data['itens'] as $d){
+                    Contas_Receber::updateOrCreate(
+                        ['uuid' => $d['id']],
+                        [
+                            'descricao' => $d['descricao'],
+                            'data_vencimento' => $d['data_vencimento'],
+                            'status' => $d['status_traduzido'],
+                            'valor' => $d['pago'],
+                            'cliente_uuid' => $d['cliente']['id'],
+                            'cliente_nome' => $d['cliente']['nome'],
+                            'data_competencia' => Carbon::yesterday()->toDateString()
+                        ]
+                    );
+                }
+
+                $pagina++;
+                
+                usleep(150 * 1000); // delay para rate limit
+            }while(!empty($data['itens']));
+
+            return true;
         }catch(\Exception $e){
-            session()->flash('error', 'Erro ao acessar a API para resgatar o CONTAS A RECEBER do CA');
             \Log::error('Erro ao acessar a API para resgatar o CONTAS A RECEBER no Conta Azul:', [
                 'error' => $e->getMessage(),
             ]);
@@ -312,43 +328,63 @@ class ContaAzulService
 
     private function getInadimplentesDiario($access_token){
         try{
-            $response = Http::withHeaders([
-                'Authorization' => 'Bearer '. $access_token
-            ])->get('https://api-v2.contaazul.com/v1/financeiro/eventos-financeiros/contas-a-receber/buscar',[
-                'pagina' => 1,
-                'tamanho_pagina' => 500, 
-                'data_vencimento_de' => Carbon::now()->subMonths(3)->toDateString(), # TESTE na API vamos voltar daqui 3 meses ou 4 e ver se não está passando do tamanho da pagina 500
-                'data_vencimento_ate' => Carbon::yesterday()->toDateString(),
-                'status' => 'ATRASADO'
-            ]);
-            
-            if($response->status() == 200){
+            $pagina = 1;
+            $data = [];
+
+            do{
+                $response = Http::withHeaders([
+                    'Authorization' => 'Bearer '. $access_token
+                ])->get('https://api-v2.contaazul.com/v1/financeiro/eventos-financeiros/contas-a-receber/buscar',[
+                    'pagina' => $pagina,
+                    'tamanho_pagina' => 500, 
+                    'data_vencimento_de' => Carbon::now()->subYear()->toDateString(),
+                    'data_vencimento_ate' => Carbon::yesterday()->toDateString(),
+                    'status' => 'ATRASADO'
+                ]);
+                
+
+                if($response->failed()){
+                    if ($response->status() == 429) {
+                        sleep(2);
+                        continue;
+                    }
+                    \Log::error('Erro ao acessar a API para resgatar o CONTAS A RECEBER com filtro de inadimplentes no Conta Azul:', [
+                        'error' => $response->body(),
+                    ]);
+
+                    return null;
+                }
+                
                 $data = $response->json();
+
                 if(empty($data['itens'])){
-                    \Log::info('nenhum inadimplente encontrado para a data: ' . Carbon::yesterday()->toDateString());
-                    return false;
-                }else{
-                    Contas_Receber::where('status', 'ATRASADO')->delete();
-                    foreach($data['itens'] as $d){
-                        Contas_Receber::create([
-                            'uuid' => $d['id'],
+                    \Log::info('nenhum inadimplente encontrado para o processamento da data: ' . Carbon::yesterday()->toDateString());
+                    break;
+                }
+               
+                foreach($data['itens'] as $d){
+                    Contas_Receber::updateOrCreate(
+                        ['uuid' => $d['id']],
+                        [
                             'descricao' => $d['descricao'],
                             'data_vencimento' => $d['data_vencimento'],
                             'status' => $d['status_traduzido'],
                             'valor' => $d['nao_pago'],
                             'cliente_uuid' => $d['cliente']['id'],
                             'cliente_nome' => $d['cliente']['nome'],
-                            'data_competencia' => Carbon::yesterday()->toDateString()
-                        ]);
-                    }
-                    return true;
+                            'data_competencia' => $d['data_vencimento']
+                        ]
+                    );
                 }
-            }else{
-                \Log::error('Erro ao buscar os inadimplentes: ' . $response->body());
-                return null;
-            }
+
+                $pagina++;
+                
+                usleep(150 * 1000); // delay para rate limit
+            }while(!empty($data['itens']));
+
+            return true;
+
         }catch(\Exception $e){
-            session()->flash('error', 'Erro ao acessar a API para resgatar o CONTAS A RECEBER com filtro de inadimplentes do CA');
             \Log::error('Erro ao acessar a API para resgatar o CONTAS A RECEBER com filtro de inadimplentes no Conta Azul:', [
                 'error' => $e->getMessage(),
             ]);
@@ -358,44 +394,62 @@ class ContaAzulService
 
     private function getContasPagarDia($access_token){
         try{
-            $response = Http::withHeaders([
-                'Authorization' => 'Bearer '. $access_token
-            ])->get('https://api-v2.contaazul.com/v1/financeiro/eventos-financeiros/contas-a-pagar/buscar',[
-                'pagina' => 1,
-                'tamanho_pagina' => 500, 
-                'data_vencimento_de' => Carbon::now()->subMonth()->toDateString(),
-                'data_vencimento_ate' => Carbon::yesterday()->toDateString(),
-                'status' => 'RECEBIDO'
-            ]);
-            
-            if($response->status() == 200){
-                $data = $response->json();
-                if(empty($data['itens'])){
-                    \Log::info('nenhum registro de contas a pagar encontrado para data ' . Carbon::yesterday()->toDateString());
-                    return false;
-                }else{
-                    foreach($data['itens'] as $d){
-                        Contas_Pagar::updateOrCreate(
-                            ['uuid' => $d['id']],
-                            [
-                                'descricao' => $d['descricao'],
-                                'data_vencimento' => $d['data_vencimento'],
-                                'status' => $d['status_traduzido'],
-                                'valor' => $d['pago'],
-                                'fornecedor_uuid' => $d['fornecedor']['id'],
-                                'fornecedor_nome' => $d['fornecedor']['nome'],
-                                'data_competencia' => Carbon::yesterday()->toDateString()
-                            ]
-                        );
+
+            $pagina = 1;
+            $data = [];
+
+            do{
+                $response = Http::withHeaders([
+                    'Authorization' => 'Bearer '. $access_token
+                ])->get('https://api-v2.contaazul.com/v1/financeiro/eventos-financeiros/contas-a-pagar/buscar',[
+                    'pagina' => $pagina,
+                    'tamanho_pagina' => 500, 
+                    'data_vencimento_de' => Carbon::now()->subYear()->toDateString(),
+                    'data_vencimento_ate' => Carbon::yesterday()->toDateString(),
+                    'status' => 'RECEBIDO'
+                ]);
+
+                if($response->failed()){
+                    if ($response->status() == 429) {
+                        sleep(2);
+                        continue;
                     }
-                    return true;
+                    \Log::error('Erro ao acessar a API para resgatar o CONTAS A PAGAR no Conta Azul:', [
+                        'error' => $response->body(),
+                    ]);
+
+                    return null;
                 }
-            }else{
-                \Log::error('Erro ao buscar contas a pagar: ' . $response->body());
-                return null;
-            }
+
+                $data = $response->json();
+                    
+                if(empty($data['itens'])){
+                    \Log::info('nenhum registro de contas a pagar encontrado para processamento da data ' . Carbon::yesterday()->toDateString());
+                    break;
+                }
+
+                foreach($data['itens'] as $d){
+                    Contas_Pagar::updateOrCreate(
+                        ['uuid' => $d['id']],
+                        [
+                            'descricao' => $d['descricao'],
+                            'data_vencimento' => $d['data_vencimento'],
+                            'status' => $d['status_traduzido'],
+                            'valor' => $d['pago'],
+                            'fornecedor_uuid' => $d['fornecedor']['id'],
+                            'fornecedor_nome' => $d['fornecedor']['nome'],
+                            'data_competencia' => Carbon::yesterday()->toDateString()
+                        ]
+                    );
+                }
+
+                $pagina++;
+
+                usleep(150 * 1000); // delay para rate limit
+            }while(!empty($data['itens']));
+
+            return true;
         }catch(\Exception $e){
-            session()->flash('error', 'Erro ao acessar a API para resgatar o CONTAS A PAGAR do CA');
             \Log::error('Erro ao acessar a API para resgatar o CONTAS A PAGAR no Conta Azul:', [
                 'error' => $e->getMessage(),
             ]);
@@ -403,28 +457,44 @@ class ContaAzulService
         }
     }    
 
-    private function getContasPagarAtrasados($access_token){
+    public function getContasPagarAtrasados($access_token){
         try{
-            $response = Http::withHeaders([
-                'Authorization' => 'Bearer '. $access_token
-            ])->get('https://api-v2.contaazul.com/v1/financeiro/eventos-financeiros/contas-a-pagar/buscar',[
-                'pagina' => 1,
-                'tamanho_pagina' => 500, 
-                'data_vencimento_de' => Carbon::now()->subMonths(3)->toDateString(), # TESTE na API vamos voltar daqui 3 meses ou 4 e ver se não está passando do tamanho da pagina 500
-                'data_vencimento_ate' => Carbon::yesterday()->toDateString(),
-                'status' => 'ATRASADO'
-            ]);
             
-            if($response->status() == 200){
+            $pagina = 1;
+            $data = [];
+            
+            do{
+                $response = Http::withHeaders([
+                    'Authorization' => 'Bearer '. $access_token
+                ])->get('https://api-v2.contaazul.com/v1/financeiro/eventos-financeiros/contas-a-pagar/buscar',[
+                    'pagina' => $pagina,
+                    'tamanho_pagina' => 500, 
+                    'data_vencimento_de' => Carbon::now()->subYear()->toDateString(),
+                    'data_vencimento_ate' => Carbon::yesterday()->toDateString(),
+                    'status' => 'ATRASADO'
+                ]);
+                
+                if($response->failed()){
+                    if ($response->status() == 429) {
+                        sleep(2);
+                        continue;
+                    }
+                    \Log::error('Erro ao acessar a API para resgatar o CONTAS A PAGAR com filtro de Atrasado no Conta Azul:', [
+                        'error' => $response->body(),
+                    ]);
+
+                    return null;
+                }
+
                 $data = $response->json();
                 if(empty($data['itens'])){
                     \Log::info('nenhum conta em aberto encontrado para a data: ' . Carbon::yesterday()->toDateString());
-                    return false;
-                }else{
-                    Contas_Pagar::where('status', 'ATRASADO')->delete();
-                    foreach($data['itens'] as $d){
-                        Contas_Pagar::create([
-                            'uuid' => $d['id'],
+                    break;
+                }
+                foreach($data['itens'] as $d){
+                    Contas_Pagar::updateOrCreate(
+                        ['uuid' => $d['id']],
+                        [
                             'descricao' => $d['descricao'],
                             'data_vencimento' => $d['data_vencimento'],
                             'status' => $d['status_traduzido'],
@@ -432,16 +502,16 @@ class ContaAzulService
                             'fornecedor_uuid' => $d['fornecedor']['id'],
                             'fornecedor_nome' => $d['fornecedor']['nome'],
                             'data_competencia' => Carbon::yesterday()->toDateString()
-                        ]);
-                    }
-                    return true;
+                        ]
+                    );
                 }
-            }else{
-                \Log::error('Erro ao buscar contas em aberto: ' . $response->body());
-                return null;
-            }
+                $pagina++;
+
+                usleep(150 * 1000); // delay para rate limit
+            }while(!empty($data['itens']));
+
+            return true;
         }catch(\Exception $e){
-            session()->flash('error', 'Erro ao acessar a API para resgatar o contas a pagar com filtro de atrasados do CA');
             \Log::error('Erro ao acessar a API para resgatar o CONTAS A PAGAR com filtro de atrasados no Conta Azul:', [
                 'error' => $e->getMessage(),
             ]);

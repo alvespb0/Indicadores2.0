@@ -267,7 +267,7 @@ class ContaAzulService
         try{
             $pagina = 1;
             $data = [];
-
+            $uuidImportados = [];
             do{
                 $response = Http::withHeaders([
                     'Authorization' => 'Bearer '. $access_token
@@ -293,10 +293,6 @@ class ContaAzulService
                 
                 $data = $response->json();
 
-                if(empty($data['itens'])){
-                    \Log::info('nenhum registro de contas a receber encontrado para o processamento da data ' . Carbon::yesterday()->toDateString());
-                    break;
-                }
                 foreach($data['itens'] as $d){
                     Contas_Receber::updateOrCreate(
                         ['uuid' => $d['id']],
@@ -310,12 +306,22 @@ class ContaAzulService
                             'data_competencia' => Carbon::yesterday()->toDateString()
                         ]
                     );
+                    $uuidImportados[] = $d['id'];
+
                 }
 
                 $pagina++;
                 
                 usleep(150 * 1000); // delay para rate limit
             }while(!empty($data['itens']));
+            
+            Contas_Receber::whereBetween('data_vencimento', [
+                Carbon::now()->subYear()->toDateString(),
+                Carbon::yesterday()->toDateString()
+            ])
+            ->where('status', 'RECEBIDO')
+            ->whereNotIn('uuid', $uuidImportados)
+            ->delete();
 
             return true;
         }catch(\Exception $e){
@@ -330,7 +336,7 @@ class ContaAzulService
         try{
             $pagina = 1;
             $data = [];
-
+            $uuidImportados = [];
             do{
                 $response = Http::withHeaders([
                     'Authorization' => 'Bearer '. $access_token
@@ -357,11 +363,6 @@ class ContaAzulService
                 
                 $data = $response->json();
 
-                if(empty($data['itens'])){
-                    \Log::info('nenhum inadimplente encontrado para o processamento da data: ' . Carbon::yesterday()->toDateString());
-                    break;
-                }
-               
                 foreach($data['itens'] as $d){
                     Contas_Receber::updateOrCreate(
                         ['uuid' => $d['id']],
@@ -375,12 +376,21 @@ class ContaAzulService
                             'data_competencia' => $d['data_vencimento']
                         ]
                     );
+                    $uuidImportados[] = $d['id'];
                 }
 
                 $pagina++;
                 
                 usleep(150 * 1000); // delay para rate limit
             }while(!empty($data['itens']));
+
+            Contas_Receber::whereBetween('data_vencimento', [
+                Carbon::now()->subYear()->toDateString(),
+                Carbon::yesterday()->toDateString()
+            ])
+            ->where('status', 'ATRASADO')
+            ->whereNotIn('uuid', $uuidImportados)
+            ->delete();
 
             return true;
 
@@ -397,6 +407,7 @@ class ContaAzulService
 
             $pagina = 1;
             $data = [];
+            $uuidImportados = [];
 
             do{
                 $response = Http::withHeaders([
@@ -423,11 +434,6 @@ class ContaAzulService
 
                 $data = $response->json();
                     
-                if(empty($data['itens'])){
-                    \Log::info('nenhum registro de contas a pagar encontrado para processamento da data ' . Carbon::yesterday()->toDateString());
-                    break;
-                }
-
                 foreach($data['itens'] as $d){
                     Contas_Pagar::updateOrCreate(
                         ['uuid' => $d['id']],
@@ -441,12 +447,21 @@ class ContaAzulService
                             'data_competencia' => Carbon::yesterday()->toDateString()
                         ]
                     );
+                    $uuidImportados[] = $d['id'];
                 }
 
                 $pagina++;
 
                 usleep(150 * 1000); // delay para rate limit
             }while(!empty($data['itens']));
+
+            Contas_Pagar::whereBetween('data_vencimento', [
+                Carbon::now()->subYear()->toDateString(),
+                Carbon::yesterday()->toDateString()
+            ])
+            ->where('status', 'RECEBIDO')
+            ->whereNotIn('uuid', $uuidImportados)
+            ->delete();
 
             return true;
         }catch(\Exception $e){
@@ -462,7 +477,7 @@ class ContaAzulService
             
             $pagina = 1;
             $data = [];
-            
+            $uuidImportados = [];
             do{
                 $response = Http::withHeaders([
                     'Authorization' => 'Bearer '. $access_token
@@ -487,10 +502,7 @@ class ContaAzulService
                 }
 
                 $data = $response->json();
-                if(empty($data['itens'])){
-                    \Log::info('nenhum conta em aberto encontrado para a data: ' . Carbon::yesterday()->toDateString());
-                    break;
-                }
+
                 foreach($data['itens'] as $d){
                     Contas_Pagar::updateOrCreate(
                         ['uuid' => $d['id']],
@@ -504,11 +516,20 @@ class ContaAzulService
                             'data_competencia' => Carbon::yesterday()->toDateString()
                         ]
                     );
+                    $uuidImportados[] = $d['id'];
                 }
                 $pagina++;
 
                 usleep(150 * 1000); // delay para rate limit
             }while(!empty($data['itens']));
+
+            Contas_Pagar::whereBetween('data_vencimento', [
+                Carbon::now()->subYear()->toDateString(),
+                Carbon::yesterday()->toDateString()
+            ])
+            ->where('status', 'ATRASADO')
+            ->whereNotIn('uuid', $uuidImportados)
+            ->delete();
 
             return true;
         }catch(\Exception $e){
@@ -547,10 +568,6 @@ class ContaAzulService
                 }
 
                 $data = $response->json();
-
-                if(empty($data['itens'])){
-                    break; # não precisa logar, ele vai retornar null quando o loop acabar de qualquer forma
-                }
 
                 foreach($data['itens'] as $d){
                     Projecao_Contas_Pagar::updateOrCreate(
@@ -608,10 +625,6 @@ class ContaAzulService
                 }
 
                 $data = $response->json();
-
-                if(empty($data['itens'])){
-                    break; # não precisa logar, ele vai retornar null quando o loop acabar de qualquer forma
-                }
 
                 foreach($data['itens'] as $d){
                     Projecao_Contas_Receber::updateOrCreate(

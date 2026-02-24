@@ -192,13 +192,11 @@ class ContaAzulService
             $receber = $this->getContasReceberDia($token->access_token);
             $inadimplentes = $this->getInadimplentesDiario($token->access_token);
             $pagar = $this->getContasPagarDia($token->access_token);
-            $pagarAberto = $this->getContasPagarAtrasados($token->access_token);
 
             \Log::info('Resumo financeiro diário', [
                 'receber' => $receber,
                 'inadimplentes' => $inadimplentes,
                 'pagar' => $pagar,
-                'abertos' => $pagarAberto
             ]);
             
             if(!$receber){
@@ -210,10 +208,6 @@ class ContaAzulService
             }
 
             if(!$pagar){
-                \Log::error('Erro ao lançar os dados de contas a pagar do dia '. Carbon::yesterday()->toDateString());
-            }
-
-            if(!$pagarAberto){
                 \Log::error('Erro ao lançar os dados de contas a pagar do dia '. Carbon::yesterday()->toDateString());
             }
 
@@ -415,9 +409,8 @@ class ContaAzulService
                 ])->get('https://api-v2.contaazul.com/v1/financeiro/eventos-financeiros/contas-a-pagar/buscar',[
                     'pagina' => $pagina,
                     'tamanho_pagina' => 500, 
-                    'data_vencimento_de' => Carbon::now()->subYear()->toDateString(),
+                    'data_vencimento_de' => Carbon::create(2024, 12, 3)->toDateString(),
                     'data_vencimento_ate' => Carbon::yesterday()->toDateString(),
-                    'status' => 'RECEBIDO'
                 ]);
 
                 if($response->failed()){
@@ -441,13 +434,19 @@ class ContaAzulService
                             'descricao' => $d['descricao'],
                             'data_vencimento' => $d['data_vencimento'],
                             'status' => $d['status_traduzido'],
-                            'valor' => $d['pago'],
+                            'valor' => $d['pago'] ?? null,
+                            'valor_aberto' => $d['nao_pago'] ?? null,
                             'fornecedor_uuid' => $d['fornecedor']['id'],
                             'fornecedor_nome' => $d['fornecedor']['nome'],
                             'data_competencia' => Carbon::yesterday()->toDateString()
                         ]
                     );
                     $uuidImportados[] = $d['id'];
+                    /* \Log::info('CALL RECEBIDO - status retornado', [
+                        'id' => $d['id'],
+                        'status_traduzido' => $d['status_traduzido'],
+                        'status_tecnico' => $d['status']
+                    ]); */
                 }
 
                 $pagina++;
@@ -459,7 +458,6 @@ class ContaAzulService
                 Carbon::now()->subYear()->toDateString(),
                 Carbon::yesterday()->toDateString()
             ])
-            ->where('status', 'RECEBIDO')
             ->whereNotIn('uuid', $uuidImportados)
             ->delete();
 
@@ -471,74 +469,6 @@ class ContaAzulService
             return null;
         }
     }    
-
-    public function getContasPagarAtrasados($access_token){
-        try{
-            
-            $pagina = 1;
-            $data = [];
-            $uuidImportados = [];
-            do{
-                $response = Http::withHeaders([
-                    'Authorization' => 'Bearer '. $access_token
-                ])->get('https://api-v2.contaazul.com/v1/financeiro/eventos-financeiros/contas-a-pagar/buscar',[
-                    'pagina' => $pagina,
-                    'tamanho_pagina' => 500, 
-                    'data_vencimento_de' => Carbon::now()->subYear()->toDateString(),
-                    'data_vencimento_ate' => Carbon::yesterday()->toDateString(),
-                    'status' => 'ATRASADO'
-                ]);
-                
-                if($response->failed()){
-                    if ($response->status() == 429) {
-                        sleep(2);
-                        continue;
-                    }
-                    \Log::error('Erro ao acessar a API para resgatar o CONTAS A PAGAR com filtro de Atrasado no Conta Azul:', [
-                        'error' => $response->body(),
-                    ]);
-
-                    return null;
-                }
-
-                $data = $response->json();
-
-                foreach($data['itens'] as $d){
-                    Contas_Pagar::updateOrCreate(
-                        ['uuid' => $d['id']],
-                        [
-                            'descricao' => $d['descricao'],
-                            'data_vencimento' => $d['data_vencimento'],
-                            'status' => $d['status_traduzido'],
-                            'valor' => $d['nao_pago'],
-                            'fornecedor_uuid' => $d['fornecedor']['id'],
-                            'fornecedor_nome' => $d['fornecedor']['nome'],
-                            'data_competencia' => Carbon::yesterday()->toDateString()
-                        ]
-                    );
-                    $uuidImportados[] = $d['id'];
-                }
-                $pagina++;
-
-                usleep(150 * 1000); // delay para rate limit
-            }while(!empty($data['itens']));
-
-            Contas_Pagar::whereBetween('data_vencimento', [
-                Carbon::now()->subYear()->toDateString(),
-                Carbon::yesterday()->toDateString()
-            ])
-            ->where('status', 'ATRASADO')
-            ->whereNotIn('uuid', $uuidImportados)
-            ->delete();
-
-            return true;
-        }catch(\Exception $e){
-            \Log::error('Erro ao acessar a API para resgatar o CONTAS A PAGAR com filtro de atrasados no Conta Azul:', [
-                'error' => $e->getMessage(),
-            ]);
-            return null;
-        }
-    }
 
     private function getProjecaoContasPagar($access_token){
         try{

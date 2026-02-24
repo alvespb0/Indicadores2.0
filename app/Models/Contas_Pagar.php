@@ -16,6 +16,7 @@ class Contas_Pagar extends Model
         'data_vencimento',
         'status',
         'valor',
+        'valor_aberto',
         'fornecedor_uuid',
         'fornecedor_nome',
         'data_competencia'

@@ -15,6 +15,7 @@ class Contas_Receber extends Model
         'data_vencimento',
         'status',
         'valor',
+        'valor_aberto',
         'cliente_uuid',
         'cliente_nome',
         'data_competencia'
